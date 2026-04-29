@@ -3,7 +3,7 @@ Description=WayVNC server
 After=graphical-session.target
 
 [Service]
-ExecStart=/usr/bin/wayvnc 0.0.0.0
+ExecStart=/usr/bin/wayvnc --hide-cursor 0.0.0.0
 Restart=on-failure
 RestartSec=3
 
