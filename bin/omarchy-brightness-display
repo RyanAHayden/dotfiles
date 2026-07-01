@@ -20,7 +20,8 @@ if [[ "$step" =~ ^[+-][0-9]+$ ]]; then
   (( new_val < 0   )) && new_val=0
   (( new_val > 100 )) && new_val=100
 
-  ddcutil --noverify --sleep-multiplier 0.1 setvcp 10 "$new_val" 2>/dev/null
   echo "$new_val" > "$CACHE"
   omarchy-swayosd-brightness "$new_val"
+  pkill -f "ddcutil.*setvcp" 2>/dev/null
+  ddcutil --noverify --sleep-multiplier 0.1 setvcp 10 "$new_val" 2>/dev/null &
 fi
