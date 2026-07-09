@@ -1,0 +1,5 @@
+# GuliKit (Xbox/BT) - remove write from ACL mask after uaccess sets user:ryha:rw.
+# chmod g-w sets mask::r-- so effective permission for ryha is r-- not rw-.
+# Wine/XInput write() gets EACCES, hid-microsoft never sends the FF report.
+SUBSYSTEM=="input", KERNEL=="event*", KERNELS=="0005:045E:02E0.*", \
+  RUN+="/usr/bin/chmod g-w %N"
