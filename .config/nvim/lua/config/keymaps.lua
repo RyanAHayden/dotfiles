@@ -16,3 +16,7 @@
 -- vim.keymap.set("n", "<leader>,")
 -- vim.keymap.set("v", "K", ":move '>+1<cr>gv=gv", { desc = "Move selection down" })
 -- vim.keymap.set("n", "<leader>cd", vim.lsp.buf.hover, { desc = "Hover documentation" })
+
+vim.keymap.set("n", "<leader>ac", function()
+  Snacks.terminal("claude --dangerously-skip-permissions", { win = { position = "right" } })
+end, { desc = "Claude (bypass perms)" })
