@@ -27,3 +27,7 @@ require("default.hypr.toggles")
 
 -- Add any other personal Hyprland configuration below.
 -- o.window("qemu", { workspace = "5" })
+
+-- bluetui/wiremix terminal popups (SUPER+CTRL+B / SUPER+CTRL+A) float by default.
+o.window("bluetui", { float = true, center = true })
+o.window("wiremix", { float = true, center = true })
