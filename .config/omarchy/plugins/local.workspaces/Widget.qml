@@ -62,8 +62,7 @@ BarWidget {
         readonly property bool focused: Hyprland.focusedWorkspace !== null && Hyprland.focusedWorkspace.id === modelData
 
         bar: root.bar
-        text: modelData === 10 ? "0" : String(modelData)
-        opacity: occupied || focused ? 1 : 0.5
+        text: focused ? "󱓻" : (modelData === 10 ? "0" : String(modelData))
         horizontalMargin: 6
         verticalPadding: 6
         fixedWidth: root.vertical ? root.barSize : Style.space(20)

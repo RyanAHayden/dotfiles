@@ -9,22 +9,18 @@ if [[ -f "$STATE_FILE" ]]; then
         omarchy-hyprland-toggle window-no-gaps
     fi
 
-    if ! pgrep -x waybar >/dev/null; then
-        omarchy toggle waybar
-    fi
+    omarchy toggle bar off
 
     hyprctl clients -j | python3 -c "
 import sys, json, subprocess
 for c in json.load(sys.stdin):
     if c['workspace']['id'] == $WS:
-        subprocess.run(['hyprctl', 'dispatch', 'setprop', 'address:' + c['address'], 'opaque', '0'])
+        subprocess.run(['hyprctl', 'dispatch', 'hl.dsp.window.set_prop({ window = \"address:' + c['address'] + '\", prop = \"opaque\", value = \"0\" })'])
 "
 else
     touch "$STATE_FILE"
 
-    if pgrep -x waybar >/dev/null; then
-        omarchy toggle waybar
-    fi
+    omarchy toggle bar on
 
     if omarchy-hyprland-toggle-disabled window-no-gaps; then
         omarchy-hyprland-toggle window-no-gaps
@@ -34,6 +30,6 @@ else
 import sys, json, subprocess
 for c in json.load(sys.stdin):
     if c['workspace']['id'] == $WS:
-        subprocess.run(['hyprctl', 'dispatch', 'setprop', 'address:' + c['address'], 'opaque', '1'])
+        subprocess.run(['hyprctl', 'dispatch', 'hl.dsp.window.set_prop({ window = \"address:' + c['address'] + '\", prop = \"opaque\", value = \"1\" })'])
 "
 fi

@@ -12,7 +12,7 @@ hl.config({
 		kb_options = "compose:ralt",
 
 		-- Use a specific keyboard variant if needed (e.g. intl for international keyboards).
-		kb_variant = "intl",
+		-- kb_variant = "intl",
 
 		-- Change speed of keyboard repeat.
 		repeat_rate = 40,
