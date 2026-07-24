@@ -87,6 +87,11 @@ o.bind("SUPER + SHIFT + J", "Move Window Down", hl.dsp.window.swap({ direction =
 o.bind("SUPER + SHIFT + K", "Move Window Up", hl.dsp.window.swap({ direction = "u" }))
 o.bind("SUPER + SHIFT + L", "Move Window Right", hl.dsp.window.swap({ direction = "r" }))
 
+-- Dwindle: make focused window the big one (inserts it at the root, unlike swap)
+o.bind("SUPER + SHIFT + I", "Promote window", hl.dsp.layout("movetoroot"))
+-- Dwindle: flip which side of the split the big window is on (left/right)
+o.bind("SUPER + CTRL + SHIFT + I", "Flip split side", hl.dsp.layout("swapsplit"))
+
 -- Workspace navigation (relative, wraps past existing workspaces)
 o.bind("SUPER + A", "Switch workspace left", hl.dsp.focus({ workspace = "r-1" }))
 o.bind("SUPER + D", "Switch workspace right", hl.dsp.focus({ workspace = "r+1" }))
