@@ -36,7 +36,10 @@ o.bind(
 	"File manager (cwd)",
 	'uwsm-app -- nautilus --new-window "$(omarchy-cmd-terminal-cwd)"'
 )
+hl.unbind("SUPER + SHIFT + B") -- was: Browser
 o.bind("SUPER + SHIFT + B", "Browser", "omarchy-launch-browser")
+
+hl.unbind("SUPER + SHIFT + ALT + B") -- was: Browser (private)
 o.bind("SUPER + SHIFT + ALT + B", "Browser (private)", "omarchy-launch-browser --private")
 o.bind("SUPER + SHIFT + M", "Music", "spotify")
 
