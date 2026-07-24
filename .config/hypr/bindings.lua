@@ -50,14 +50,13 @@ hl.unbind("SUPER + SHIFT + SLASH") -- was: 1Password
 o.bind("SUPER + SHIFT + SLASH", "Passwords", 'omarchy-launch-or-focus keepassxc "uwsm-app -- keepassxc"')
 
 hl.unbind("SUPER + SHIFT + S") -- was: Google Maps
-o.bind("SUPER + SHIFT + S", "Audio", 'uwsm-app -- xdg-terminal-exec -- wiremix')
+o.bind("SUPER + SHIFT + S", "Audio", "uwsm-app -- xdg-terminal-exec -- wiremix")
 
 -- Restore pre-Quattro TUI managers instead of the built-in shell panels
 hl.unbind("SUPER + CTRL + B") -- was: Bluetooth panel (omarchy.bluetooth)
-o.bind("SUPER + CTRL + B", "Bluetooth (bluetui)", 'uwsm-app -- xdg-terminal-exec -- bluetui')
+o.bind("SUPER + CTRL + B", "Bluetooth (bluetui)", "uwsm-app -- xdg-terminal-exec -- bluetui")
 
-hl.unbind("SUPER + CTRL + A") -- was: Audio panel (omarchy.audio)
-o.bind("SUPER + CTRL + A", "Audio (wiremix)", 'uwsm-app -- xdg-terminal-exec -- wiremix')
+-- hl.unbind("SUPER + CTRL + A") -- was: Audio panel (omarchy.audio)
 
 -- Brightness controls
 o.bind("F23", "Brightness down 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display -5")
