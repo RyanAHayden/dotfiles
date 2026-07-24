@@ -54,20 +54,36 @@ BarWidget {
     Repeater {
       model: root.workspaceIds()
 
-      WidgetButton {
+      Item {
+        id: cell
         required property int modelData
 
         readonly property var workspace: root.workspaceById(modelData)
         readonly property bool occupied: workspace !== null && workspace.toplevels.values.length > 0
         readonly property bool focused: Hyprland.focusedWorkspace !== null && Hyprland.focusedWorkspace.id === modelData
 
-        bar: root.bar
-        text: focused ? "󱓻" : (modelData === 10 ? "0" : String(modelData))
-        horizontalMargin: 6
-        verticalPadding: 6
-        fixedWidth: root.vertical ? root.barSize : Style.space(20)
-        fixedHeight: root.barSize
-        onPressed: function() { root.focusWorkspace(modelData) }
+        implicitWidth: button.implicitWidth
+        implicitHeight: button.implicitHeight
+
+        Rectangle {
+          visible: cell.focused
+          anchors.fill: parent
+          radius: Style.space(0.5)
+          color: Color.accent
+        }
+
+        WidgetButton {
+          id: button
+          anchors.fill: parent
+          bar: root.bar
+          text: cell.modelData === 10 ? "0" : String(cell.modelData)
+          foreground: cell.focused ? Color.background : (bar ? bar.barForeground : Color.foreground)
+          horizontalMargin: 6
+          verticalPadding: 6
+          fixedWidth: root.vertical ? root.barSize : Style.space(20)
+          fixedHeight: root.barSize
+          onPressed: function() { root.focusWorkspace(cell.modelData) }
+        }
       }
     }
   }
