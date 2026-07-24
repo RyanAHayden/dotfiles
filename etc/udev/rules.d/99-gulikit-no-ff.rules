@@ -1,8 +1,9 @@
 # GuliKit - remove write from ACL mask after uaccess sets user:ryha:rw.
 # chmod g-w sets mask::r-- so effective permission for ryha is r-- not rw-.
 # Wine/XInput write() gets EACCES, driver never sends the FF report.
-# 0005 = BT HID (Xbox One mode, hid-microsoft), 0003 = USB HID (Xbox 360 mode, xpad)
+# BT mode (045E:02E0) uses HID subsystem, match via KERNELS bus prefix 0005.
+# USB mode (045E:028E) uses xpad driver (no HID subsystem), match via ATTRS.
 SUBSYSTEM=="input", KERNEL=="event*", KERNELS=="0005:045E:02E0.*", \
   RUN+="/usr/bin/chmod g-w %N"
-SUBSYSTEM=="input", KERNEL=="event*", KERNELS=="0003:045E:028E.*", \
+SUBSYSTEM=="input", KERNEL=="event*", ATTRS{idVendor}=="045e", ATTRS{idProduct}=="028e", \
   RUN+="/usr/bin/chmod g-w %N"
