@@ -25,7 +25,7 @@ hl.unbind("XF86KbdLightOnOff")
 o.bind(
 	"SUPER + ALT + RETURN",
 	"Tmux",
-	'uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" bash -c "tmux attach || tmux new -s Work"'
+	'uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" bash -c "tmux"'
 )
 
 hl.unbind("SUPER + SHIFT + RETURN") -- was: Browser
