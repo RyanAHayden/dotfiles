@@ -4,19 +4,14 @@
     "layout": {
       "center": [
         {
-          "format": "dddd HH:mm",
-          "formatAlt": "d MMMM 'W'ww yyyy",
-          "id": "omarchy.clock",
-          "verticalFormat": "HH\n—\nmm"
-        },
-        {
           "id": "omarchy.weather"
         },
         {
           "id": "omarchy.system-update"
         },
         {
-          "id": "omarchy.indicators"
+          "id": "omarchy.indicators",
+          "items": ["Dnd", "Reminder", "TmuxAlert", "NightLight", "StayAwake", "Dictation"]
         }
       ],
       "left": [
@@ -48,6 +43,12 @@
         },
         {
           "id": "omarchy.power"
+        },
+        {
+          "format": "dddd hh:mm AP",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "id": "omarchy.clock",
+          "verticalFormat": "hh\n—\nmm\nAP"
         }
       ]
     },
