@@ -11,7 +11,14 @@
         },
         {
           "id": "omarchy.indicators",
-          "items": ["Dnd", "Reminder", "TmuxAlert", "NightLight", "StayAwake", "Dictation"]
+          "items": [
+            "Dnd",
+            "Reminder",
+            "TmuxAlert",
+            "NightLight",
+            "StayAwake",
+            "Dictation"
+          ]
         }
       ],
       "left": [
@@ -42,18 +49,18 @@
           "id": "omarchy.monitor"
         },
         {
-          "id": "omarchy.power"
-        },
-        {
           "format": "dddd hh:mm AP",
           "formatAlt": "d MMMM 'W'ww yyyy",
           "id": "omarchy.clock",
           "verticalFormat": "hh\n—\nmm\nAP"
+        },
+        {
+          "id": "omarchy.power"
         }
       ]
     },
     "position": "top",
-    "transparent": true
+    "transparent": false
   },
   "idle": {
     "lock": 300,

@@ -55,6 +55,8 @@ o.bind("SUPER + SHIFT + SLASH", "Passwords", 'omarchy-launch-or-focus keepassxc 
 hl.unbind("SUPER + SHIFT + S") -- was: Google Maps
 o.bind("SUPER + SHIFT + S", "Audio", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix")
 
+hl.unbind("SUPER + SHIFT + P") -- was: Google Photos
+
 -- Restore pre-Quattro TUI managers instead of the built-in shell panels
 hl.unbind("SUPER + CTRL + B") -- was: Bluetooth panel (omarchy.bluetooth)
 o.bind("SUPER + CTRL + B", "Bluetooth (bluetui)", "uwsm-app -- xdg-terminal-exec --app-id=bluetui -- bluetui")
