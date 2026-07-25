@@ -60,7 +60,7 @@ hl.unbind("SUPER + CTRL + B") -- was: Bluetooth panel (omarchy.bluetooth)
 o.bind("SUPER + CTRL + B", "Bluetooth (bluetui)", "uwsm-app -- xdg-terminal-exec --app-id=bluetui -- bluetui")
 
 hl.unbind("SUPER + CTRL + A") -- was: Audio panel (omarchy.audio)
-o.bind("SUPER + CTRL + A", "Audio (wiremix)", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix")
+-- o.bind("SUPER + CTRL + A", "Audio (wiremix)", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix")
 
 -- Brightness controls
 o.bind("F23", "Brightness down 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display -5")
