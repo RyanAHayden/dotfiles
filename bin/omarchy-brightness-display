@@ -1,5 +1,5 @@
 #!/bin/bash
-# DDC/CI brightness control with SwayOSD overlay.
+# DDC/CI brightness control with Omarchy OSD overlay.
 # Usage: omarchy-brightness-display <step>   (e.g. +5, -5, +25, -25)
 
 CACHE=/tmp/omarchy-brightness-display
@@ -21,7 +21,7 @@ if [[ "$step" =~ ^[+-][0-9]+$ ]]; then
   (( new_val > 100 )) && new_val=100
 
   echo "$new_val" > "$CACHE"
-  omarchy-swayosd-brightness "$new_val"
+  omarchy-osd -i brightness -p "$new_val"
   pkill -f "ddcutil.*setvcp" 2>/dev/null
   ddcutil --noverify --sleep-multiplier 0.1 setvcp 10 "$new_val" 2>/dev/null &
 fi
