@@ -31,3 +31,15 @@ require("default.hypr.toggles")
 -- bluetui/wiremix terminal popups (SUPER+CTRL+B / SUPER+CTRL+A) float by default.
 o.window("bluetui", { float = true, center = true })
 o.window("wiremix", { float = true, center = true })
+
+-- DaVinci Resolve's XWayland popups fight the main window for focus and
+-- flash borders/opacity. Pin them focused and flatten their look.
+o.window({ class = "resolve", float = true }, { tag = "+drpopup" })
+o.window({ tag = "drpopup" }, {
+	stay_focused = false,
+	tag = "-default-opacity",
+	no_shadow = true,
+	border_size = 0,
+	rounding = 0,
+	opacity = "1 1",
+})
