@@ -28,6 +28,15 @@ require("default.hypr.toggles")
 -- Add any other personal Hyprland configuration below.
 -- o.window("qemu", { workspace = "5" })
 
+-- Let XWayland apps (e.g. Ghidra/Java Swing) report the real fractional
+-- monitor scale instead of being force-upscaled from 1x. Trade-off: some
+-- other X11 apps may render blurrier. Revert by deleting this block if so.
+-- hl.config({
+-- 	xwayland = {
+-- 		force_zero_scaling = false,
+-- 	},
+-- })
+
 -- bluetui/wiremix terminal popups (SUPER+CTRL+B / SUPER+CTRL+A) float by default.
 o.window("bluetui", { float = true, center = true })
 o.window("wiremix", { float = true, center = true })
