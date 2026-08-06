@@ -28,6 +28,9 @@ o.bind(
 	'uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" bash -c "tmux"'
 )
 
+hl.unbind("SUPER + ALT + SPACE")
+o.bind("SUPER + ALT + SPACE", "Dictate", "voxtype record toggle")
+
 hl.unbind("SUPER + SHIFT + RETURN") -- was: Browser
 o.bind("SUPER + SHIFT + RETURN", "Browser (Blank window)", "omarchy-launch-browser --blank-window")
 
@@ -113,3 +116,6 @@ o.bind("SUPER + SHIFT + A", "Move window workspace left", hl.dsp.window.move({ w
 
 hl.unbind("SUPER + SHIFT + D") -- was: Docker
 o.bind("SUPER + SHIFT + D", "Move window workspace right", hl.dsp.window.move({ workspace = "r+1" }))
+
+-- Toggle HDMI-A-1 mirroring DP-1 (built-in mirror toggle only covers laptop panels)
+o.bind("SUPER + CTRL + M", "Toggle monitor mirror", "~/.config/hypr/scripts/toggle-monitor-mirror.sh")
