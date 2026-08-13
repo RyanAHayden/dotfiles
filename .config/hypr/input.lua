@@ -9,7 +9,7 @@ hl.config({
 		-- kb_layout = "us,dk,eu",
 		kb_layout = "us",
 		-- kb_options = "compose:caps,shift:both_capslock,grp:alts_toggle",
-		kb_options = "compose:ralt",
+		kb_options = "ctrl:nocaps",
 
 		-- Use a specific keyboard variant if needed (e.g. intl for international keyboards).
 		-- kb_variant = "intl",
@@ -22,7 +22,7 @@ hl.config({
 		numlock_by_default = true,
 
 		-- Increase sensitivity for mouse/trackpad (default: 0).
-		sensitivity = 0,
+		sensitivity = 1,
 
 		-- Turn off mouse acceleration (default: adaptive).
 		accel_profile = "flat",
