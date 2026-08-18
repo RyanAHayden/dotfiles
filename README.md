@@ -23,5 +23,12 @@ Discord Theme (Vencord):
 `https://raw.githubusercontent.com/refact0r/system24/refs/heads/main/theme/flavors/system24-auto.theme.css`
 ## keyd (Left Ctrl held + hjkl = arrows)
 
+`./setup.sh` (redeploys all three`omarchy refresh sddm`/`omarchy refresh limine`)
+
+Discord Theme (Vencord):
+`https://raw.githubusercontent.com/refact0r/system24/refs/heads/main/theme/flavors/system24-auto.theme.css`
+
+## keyd (Left Ctrl held + hjkl = arrows)
+
 `sudo stow -t / etc`
 `sudo systemctl enable --now keyd`
