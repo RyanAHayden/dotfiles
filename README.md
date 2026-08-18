@@ -13,3 +13,8 @@ Use at your own risk
 
 install theme:
 `https://github.com/RyanAHayden/ryha-omarchy-theme`
+
+## keyd (Left Ctrl held + hjkl = arrows)
+
+`sudo stow -t / etc`
+`sudo systemctl enable --now keyd`
