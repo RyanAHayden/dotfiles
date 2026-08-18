@@ -119,3 +119,6 @@ o.bind("SUPER + SHIFT + D", "Move window workspace right", hl.dsp.window.move({ 
 
 -- Toggle HDMI-A-1 mirroring DP-1 (built-in mirror toggle only covers laptop panels)
 o.bind("SUPER + CTRL + M", "Toggle monitor mirror", "~/.config/hypr/scripts/toggle-monitor-mirror.sh")
+
+-- Pointer speed picker (Omarchy shell menu): SUPER+B, then pick 1-4.
+o.bind("SUPER + B", "Pointer speed menu", "~/.config/hypr/scripts/pointer-speed-menu.sh")
