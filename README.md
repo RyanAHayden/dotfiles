@@ -18,3 +18,6 @@ Install theme:
 
 `./setup.sh` (redeploys all three - safe to re-run, e.g. after
 `omarchy refresh sddm`/`omarchy refresh limine`)
+
+Discord Theme (Vencord):
+`https://raw.githubusercontent.com/refact0r/system24/refs/heads/main/theme/flavors/system24-auto.theme.css`
