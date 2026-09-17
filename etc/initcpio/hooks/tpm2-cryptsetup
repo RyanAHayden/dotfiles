@@ -1,0 +1,23 @@
+#!/usr/bin/ash
+
+run_hook() {
+    modprobe -a -q dm-crypt >/dev/null 2>&1
+
+    if [ -n "${cryptdevice}" ]; then
+        IFS=: read cryptdev cryptname cryptoptions <<EOF
+$cryptdevice
+EOF
+    else
+        cryptdev="${root}"
+        cryptname="root"
+    fi
+
+    [ -z "${cryptdev}" ] && return 0
+    [ -b "/dev/mapper/${cryptname}" ] && return 0
+
+    resolved=$(resolve_device "${cryptdev}" "$(getarg rootdelay)") || return 0
+    cryptsetup isLuks "${resolved}" >/dev/null 2>&1 || return 0
+
+    cryptsetup open --type luks --token-only "${resolved}" "${cryptname}" >/dev/null 2>&1
+    return 0
+}
