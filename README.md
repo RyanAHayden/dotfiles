@@ -11,5 +11,7 @@ Use at your own risk
 `systemctl --user enable --now wayvnc`  
 `loginctl enable-linger $USER`
 
-install theme:
+Install theme:
 `https://github.com/RyanAHayden/ryha-omarchy-theme`
+Enable boot logo:
+`omarchy plymouth set by theme ryha-omarchy`
