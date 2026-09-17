@@ -13,5 +13,8 @@ Use at your own risk
 
 Install theme:
 `https://github.com/RyanAHayden/ryha-omarchy-theme`
-Enable boot logo:
-`omarchy plymouth set by theme ryha-omarchy`
+
+## sddm theme, boot logo, limine theme
+
+`./setup.sh` (redeploys all three - safe to re-run, e.g. after
+`omarchy refresh sddm`/`omarchy refresh limine`)
