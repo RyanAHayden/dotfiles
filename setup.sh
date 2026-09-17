@@ -10,6 +10,7 @@ echo "==> dotfiles setup"
 sudo pacman -S stow
 stow $DOTFILES --adopt
 chmod +x ~/.local/bin/*
+omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
 
 echo "==> sddm theme (omarchy-red)"
 sudo cp -r "$DOTFILES/etc/sddm-themes/omarchy-red" /usr/share/sddm/themes/omarchy-red
