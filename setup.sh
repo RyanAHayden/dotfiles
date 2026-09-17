@@ -5,6 +5,12 @@ set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+echo "==> dotfiles setup"
+
+sudo pacman -S stow
+stow $DOTFILES --adopt
+chmod +x ~/.local/bin/*
+
 echo "==> sddm theme (omarchy-red)"
 sudo cp -r "$DOTFILES/etc/sddm-themes/omarchy-red" /usr/share/sddm/themes/omarchy-red
 sudo cp "$DOTFILES/etc/sddm.conf.d/10-theme.conf" /etc/sddm.conf.d/10-theme.conf
@@ -20,4 +26,4 @@ sudo bash -c "
   rm /tmp/limine-entries.conf
 "
 
-echo "Done - reboot to see everything."
+echo "Done - check git changes since we adopted your default files"
