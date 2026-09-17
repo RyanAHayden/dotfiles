@@ -18,3 +18,6 @@ sudo cp ~/dotfiles/etc/sddm.conf.d/10-theme.conf /etc/sddm.conf.d/10-theme.conf
 
 Re-run both after editing the theme in this repo - there's no live link to
 keep them in sync automatically.
+
+`../../.stowrc` excludes `sddm-themes/` and `sddm.conf.d/` from `stow`, so
+running stow over `etc/` won't undo this and resymlink them.

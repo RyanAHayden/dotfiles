@@ -1,0 +1,2 @@
+--ignore='sddm-themes'
+--ignore='sddm\.conf\.d'
