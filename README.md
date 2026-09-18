@@ -19,6 +19,13 @@ Theme:
 
 `./setup.sh` (redeploys all three`omarchy refresh sddm`/`omarchy refresh limine`)
 
+## sddm password at login (advanced)
+
+`./etc/setup-login-password.sh` - run this yourself after your
+disk-encryption/TPM2/secure-boot setup (see `etc/initcpio/README.md`).
+That setup removes the LUKS passphrase prompt, so this makes sure sddm
+still asks for a password instead of autologging in.
+
 Discord Theme (Vencord):
 `https://raw.githubusercontent.com/refact0r/system24/refs/heads/main/theme/flavors/system24-auto.theme.css`
 ## keyd (Left Ctrl held + hjkl = arrows)
