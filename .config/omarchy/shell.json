@@ -1,31 +1,40 @@
 {
+  "version": 1,
+  "idle": {
+    "screensaver": 150,
+    "lock": 300
+  },
   "bar": {
+    "position": "top",
+    "transparent": false,
     "centerAnchor": "omarchy.clock",
     "layout": {
-      "center": [
-        {
-          "id": "omarchy.system-update"
-        },
-        {
-          "id": "omarchy.weather"
-        },
-        {
-          "id": "omarchy.indicators",
-          "items": [
-            "Dnd",
-            "Reminder",
-            "NightLight",
-            "StayAwake",
-            "Dictation"
-          ]
-        }
-      ],
       "left": [
         {
           "id": "omarchy.menu"
         },
         {
           "id": "omarchy.workspaces"
+        }
+      ],
+      "center": [
+        {
+          "id": "omarchy.indicators"
+        },
+        {
+          "id": "omarchy.clock",
+          "format": "dddd HH:mm",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "verticalFormat": "HH\n—\nmm"
+        },
+        {
+          "id": "omarchy.keyboard-layout"
+        },
+        {
+          "id": "omarchy.weather"
+        },
+        {
+          "id": "omarchy.system-update"
         }
       ],
       "right": [
@@ -36,45 +45,23 @@
           "id": "omarchy.agents"
         },
         {
-          "id": "omarchy.tailscale"
-        },
-        {
           "id": "omarchy.bluetooth"
         },
         {
           "id": "omarchy.network"
         },
         {
+          "id": "omarchy.audio"
+        },
+        {
           "id": "omarchy.monitor"
         },
         {
-          "id": "omarchy.keyboard-layout"
-        },
-        {
-          "id": "omarchy.power"
-        },
-        {
-          "id": "io.github.brm-src.plugin-control-center"
-        },
-        {
-          "format": "dddd hh:mm AP",
-          "formatAlt": "d MMMM 'W'ww yyyy",
-          "id": "omarchy.clock",
-          "verticalFormat": "hh\n—\nmm\nAP"
+          "id": "omarchy.power",
+          "showPercentage": false
         }
       ]
-    },
-    "position": "top",
-    "transparent": false
+    }
   },
-  "idle": {
-    "lock": 300,
-    "screensaver": 150
-  },
-  "plugins": [],
-  "version": 1,
-  "disabledPlugins": [
-    "omarchy.battery",
-    "omarchy.wifiqr"
-  ]
+  "plugins": []
 }
