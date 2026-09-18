@@ -16,7 +16,7 @@ stow . --adopt
 # subdirectory also named "bin", either erroring or silently linking
 # .local/bin/* into ~/bin instead of ~/.local/bin.
 if [ -d "$DOTFILES/.local" ]; then
-  stow -d "$DOTFILES/.local" -t "$HOME/.local" --adopt bin
+  stow -d "$DOTFILES/.local" -t "$HOME/.local" --adopt .
   chmod +x ~/.local/bin/*
 fi
 omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
@@ -29,7 +29,7 @@ echo "==> boot logo (plymouth, via ryha-omarchy theme)"
 omarchy plymouth set by theme ryha-omarchy
 
 echo "==> limine boot menu theme"
-entries_line=$(grep -n "^/" /boot/limine.conf | head -1 | cut -d: -f1)
+entries_line=$(sudo grep -n "^/" /boot/limine.conf | head -1 | cut -d: -f1)
 sudo bash -c "
   tail -n +$entries_line /boot/limine.conf > /tmp/limine-entries.conf
   cat '$DOTFILES/etc/limine/theme-header.conf' /tmp/limine-entries.conf > /boot/limine.conf
