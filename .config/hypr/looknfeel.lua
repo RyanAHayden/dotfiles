@@ -25,6 +25,22 @@
 --   },
 -- })
 
+-- System-wide CRT scanline/vignette effect (applies to everything: PCSX2, browser, terminal, etc.)
+-- Source: https://github.com/zer0-sh/retro-shader-hyperland (GPL-3.0)
+-- Toggled via ~/.config/hypr/scripts/toggle-crt.sh, which flips this state file and reloads.
+-- (Reload, not `hyprctl eval`/`keyword`, because runtime screen_shader changes don't force a
+-- redraw in this Hyprland version and leave a stale frame until an unrelated redraw happens.)
+local crt_state_file = "/home/ryha/.local/state/crt-shader-enabled"
+local crt_state = io.open(crt_state_file, "r")
+if crt_state then
+  crt_state:close()
+  hl.config({
+    decoration = {
+      screen_shader = "/home/ryha/.config/hypr/shaders/crt_hypr.frag",
+    },
+  })
+end
+
 -- https://wiki.hypr.land/Configuring/Basics/Variables/#animations
 -- hl.config({
 --   animations = {
