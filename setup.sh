@@ -8,8 +8,17 @@ DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "==> dotfiles setup"
 
 sudo pacman -S stow
-stow $DOTFILES --adopt
-chmod +x ~/.local/bin/*
+cd "$DOTFILES"
+stow . --adopt
+# .local is stowed separately (rooted at .local/, .stowrc ignores it in the
+# main pass) so stow never sees the top-level bin/ package while placing
+# .local/bin/*: GNU Stow 2.4.1 conflates a stowed ~/bin with any package
+# subdirectory also named "bin", either erroring or silently linking
+# .local/bin/* into ~/bin instead of ~/.local/bin.
+if [ -d "$DOTFILES/.local" ]; then
+  stow -d "$DOTFILES/.local" -t "$HOME/.local" --adopt bin
+  chmod +x ~/.local/bin/*
+fi
 omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
 
 echo "==> sddm theme (omarchy-red)"

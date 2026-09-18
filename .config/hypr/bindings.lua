@@ -5,8 +5,8 @@
 --   omarchy menu keybindings --print
 
 -- Quadrant tile toggle (no borders, no waybar, no transparency)
-hl.unbind("SUPER + ALT + G") -- was: Move active window out of group
-o.bind("SUPER + ALT + G", "Toggle quadrant tile mode", "~/.config/hypr/scripts/quadrant-tile.sh")
+-- hl.unbind("SUPER + ALT + G") -- was: Move active window out of group
+-- o.bind("SUPER + ALT + G", "Toggle quadrant tile mode", "~/.config/hypr/scripts/quadrant-tile.sh")
 
 -- Unbind defaults that conflict with vim-key focus/move bindings below
 hl.unbind("SUPER + J")
@@ -23,9 +23,9 @@ hl.unbind("XF86KbdLightOnOff")
 
 -- Applications (unbind the default assigned to each key first)
 o.bind(
-	"SUPER + ALT + RETURN",
-	"Tmux",
-	'uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" bash -c "tmux"'
+  "SUPER + ALT + RETURN",
+  "Tmux",
+  'uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" bash -c "tmux"'
 )
 
 hl.unbind("SUPER + ALT + SPACE")
@@ -35,9 +35,9 @@ hl.unbind("SUPER + SHIFT + RETURN") -- was: Browser
 o.bind("SUPER + SHIFT + RETURN", "Browser (Blank window)", "omarchy-launch-browser --blank-window")
 
 o.bind(
-	"SUPER + ALT + SHIFT + F",
-	"File manager (cwd)",
-	'uwsm-app -- nautilus --new-window "$(omarchy-cmd-terminal-cwd)"'
+  "SUPER + ALT + SHIFT + F",
+  "File manager (cwd)",
+  'uwsm-app -- nautilus --new-window "$(omarchy-cmd-terminal-cwd)"'
 )
 hl.unbind("SUPER + SHIFT + B") -- was: Browser
 o.bind("SUPER + SHIFT + B", "Browser", "omarchy-launch-browser")
@@ -55,14 +55,14 @@ o.bind("SUPER + SHIFT + G", "Steam", "omarchy-launch-or-focus steam")
 hl.unbind("SUPER + SHIFT + SLASH") -- was: 1Password
 o.bind("SUPER + SHIFT + SLASH", "Passwords", 'omarchy-launch-or-focus keepassxc "uwsm-app -- keepassxc"')
 
-hl.unbind("SUPER + SHIFT + S") -- was: Google Maps
-o.bind("SUPER + SHIFT + S", "Audio", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix")
+-- hl.unbind("SUPER + SHIFT + S") -- was: Google Maps
+-- o.bind("SUPER + SHIFT + S", "Audio", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix")
 
 hl.unbind("SUPER + SHIFT + P") -- was: Google Photos
 
 -- Restore pre-Quattro TUI managers instead of the built-in shell panels
-hl.unbind("SUPER + CTRL + B") -- was: Bluetooth panel (omarchy.bluetooth)
-o.bind("SUPER + CTRL + B", "Bluetooth (bluetui)", "uwsm-app -- xdg-terminal-exec --app-id=bluetui -- bluetui")
+-- hl.unbind("SUPER + CTRL + B") -- was: Bluetooth panel (omarchy.bluetooth)
+-- o.bind("SUPER + CTRL + B", "Bluetooth (bluetui)", "uwsm-app -- xdg-terminal-exec --app-id=bluetui -- bluetui")
 
 hl.unbind("SUPER + CTRL + A") -- was: Audio panel (omarchy.audio)
 -- o.bind("SUPER + CTRL + A", "Audio (wiremix)", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix")
@@ -75,14 +75,14 @@ o.bind("SHIFT + F24", "Brightness up 25%", "/home/ryha/dotfiles/bin/omarchy-brig
 
 -- Crosshair
 o.bind(
-	"F19",
-	"Show green crosshair",
-	"pkill crosshair; /home/ryha/.local/bin/crosshair/crosshair --image /home/ryha/.local/bin/crosshair/cross.png --gamma 1"
+  "F19",
+  "Show green crosshair",
+  "pkill crosshair; /home/ryha/.local/bin/crosshair/crosshair --image /home/ryha/.local/bin/crosshair/cross.png --gamma 1"
 )
 o.bind(
-	"XF86Launch9",
-	"Show dot crosshair",
-	"pkill crosshair; /home/ryha/.local/bin/crosshair/crosshair --image /home/ryha/.local/bin/crosshair/dot.png --gamma 1"
+  "XF86Launch9",
+  "Show dot crosshair",
+  "pkill crosshair; /home/ryha/.local/bin/crosshair/crosshair --image /home/ryha/.local/bin/crosshair/dot.png --gamma 1"
 )
 o.bind("XF86Tools", "Kill crosshair", "pkill crosshair")
 
