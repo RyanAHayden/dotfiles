@@ -7,7 +7,7 @@ DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "==> dotfiles setup"
 
-sudo pacman -S stow
+command -v stow >/dev/null || sudo pacman -S stow
 cd "$DOTFILES"
 stow . --adopt
 # .local is stowed separately (rooted at .local/, .stowrc ignores it in the
@@ -22,7 +22,7 @@ fi
 omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
 
 echo "==> sddm theme (omarchy-red)"
-sudo cp -r "$DOTFILES/etc/sddm-themes/omarchy-red" /usr/share/sddm/themes/omarchy-red
+sudo cp -rT "$DOTFILES/etc/sddm-themes/omarchy-red" /usr/share/sddm/themes/omarchy-red
 sudo cp "$DOTFILES/etc/sddm.conf.d/10-theme.conf" /etc/sddm.conf.d/10-theme.conf
 
 echo "==> boot logo (plymouth, via ryha-omarchy theme)"
