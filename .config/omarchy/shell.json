@@ -58,7 +58,7 @@
         },
         {
           "id": "omarchy.power",
-          "showPercentage": false
+          "showPercentage": true
         }
       ]
     }
