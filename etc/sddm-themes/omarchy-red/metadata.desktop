@@ -1,0 +1,7 @@
+[SddmGreeterTheme]
+Name=Omarchy Red
+Description=OLED black & red variant of the Omarchy SDDM theme
+Author=Omarchy
+Type=sddm-theme
+Version=1.0
+QtVersion=6
