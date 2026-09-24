@@ -1,0 +1,8 @@
+--ignore='sddm-themes'
+--ignore='sddm\.conf\.d'
+--ignore='limine'
+--ignore='setup-login-password\.sh'
+--ignore='^/etc$'
+--ignore='^/README\.md$'
+--ignore='^/setup\.sh$'
+--ignore='^/\.local$'

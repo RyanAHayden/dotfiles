@@ -37,6 +37,10 @@ require("default.hypr.toggles")
 -- 	},
 -- })
 
+-- Override Steam's own minimum window size so it can be resized smaller
+-- than its built-in floor.
+o.window({ class = "steam" }, { min_size = { 100, 100 } })
+
 -- bluetui/wiremix terminal popups (SUPER+CTRL+B / SUPER+CTRL+A) float by default.
 o.window("bluetui", { float = true, center = true })
 o.window("wiremix", { float = true, center = true })

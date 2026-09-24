@@ -119,3 +119,6 @@ o.bind("SUPER + SHIFT + D", "Move window workspace right", hl.dsp.window.move({ 
 
 -- Toggle HDMI-A-1 mirroring DP-1 (built-in mirror toggle only covers laptop panels)
 o.bind("SUPER + CTRL + M", "Toggle monitor mirror", "~/.config/hypr/scripts/toggle-monitor-mirror.sh")
+
+-- Toggle CRT scanline/vignette screen shader
+o.bind("SUPER + ALT + C", "Toggle CRT shader", "~/.config/hypr/scripts/toggle-crt.sh")
