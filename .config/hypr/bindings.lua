@@ -6,7 +6,7 @@
 
 -- Quadrant tile toggle (no borders, no waybar, no transparency)
 hl.unbind("SUPER + ALT + G") -- was: Move active window out of group
-o.bind("SUPER + ALT + G", "Toggle quadrant tile mode", "~/.config/hypr/scripts/quadrant-tile.sh")
+o.bind("SUPER + ALT + G", "Toggle quadrant tile mode", "~/bin/quadrant-tile.sh")
 
 -- Unbind defaults that conflict with vim-key focus/move bindings below
 hl.unbind("SUPER + J")
@@ -118,11 +118,11 @@ hl.unbind("SUPER + SHIFT + D") -- was: Docker
 o.bind("SUPER + SHIFT + D", "Move window workspace right", hl.dsp.window.move({ workspace = "r+1" }))
 
 -- Toggle HDMI-A-1 mirroring DP-1 (built-in mirror toggle only covers laptop panels)
-o.bind("SUPER + CTRL + M", "Toggle monitor mirror", "~/.config/hypr/scripts/toggle-monitor-mirror.sh")
+o.bind("SUPER + CTRL + M", "Toggle monitor mirror", "~/bin/toggle-monitor-mirror.sh")
 
 -- Toggle CRT scanline/vignette screen shader
-o.bind("SUPER + ALT + C", "Toggle CRT shader", "~/.config/hypr/scripts/toggle-crt.sh")
+o.bind("SUPER + ALT + C", "Toggle CRT shader", "~/bin/toggle-crt.sh")
 
 -- Focus lock: new windows open without stealing focus
 hl.unbind("SUPER + SHIFT + O") -- was: Obsidian
-o.bind("SUPER + SHIFT + O", "Toggle focus lock", "~/.config/hypr/scripts/toggle-focus-lock.sh")
+o.bind("SUPER + SHIFT + O", "Toggle focus lock", "~/bin/toggle-focus-lock.sh")
