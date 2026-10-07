@@ -122,3 +122,7 @@ o.bind("SUPER + CTRL + M", "Toggle monitor mirror", "~/.config/hypr/scripts/togg
 
 -- Toggle CRT scanline/vignette screen shader
 o.bind("SUPER + ALT + C", "Toggle CRT shader", "~/.config/hypr/scripts/toggle-crt.sh")
+
+-- Focus lock: new windows open without stealing focus
+hl.unbind("SUPER + SHIFT + O") -- was: Obsidian
+o.bind("SUPER + SHIFT + O", "Toggle focus lock", "~/.config/hypr/scripts/toggle-focus-lock.sh")
