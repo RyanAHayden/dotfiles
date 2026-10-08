@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Print a fresh FreeLLMAPI dashboard session token (valid 1 day) for the npx freellmapi CLI, minted the way the desktop
+# app does it: random hex, sha256 of it stored in its sessions table for the first user.
+#   FREELLMAPI_DASHBOARD_TOKEN=$(freellmapi-token) npx freellmapi keys add google --key KEY
+set -euo pipefail
+db=~/.config/FreeLLMAPI/freeapi.db
+t=$(openssl rand -hex 32)
+sqlite3 "$db" "INSERT INTO sessions (token_hash, user_id, expires_at_ms)
+  VALUES ('$(printf %s "$t" | sha256sum | cut -d' ' -f1)', (SELECT id FROM users ORDER BY id LIMIT 1),
+          $(( $(date +%s) * 1000 + 86400000 )));"
+echo "$t"
