@@ -1,0 +1,7 @@
+#!/bin/bash
+# One-shot reboot into Windows Boot Manager via UEFI BootNext.
+set -e
+id=$(efibootmgr | sed -n 's/^Boot\([0-9A-F]\{4\}\)\*\? Windows Boot Manager.*/\1/p' | head -1)
+[ -n "$id" ] || { echo "Windows Boot Manager not found in efibootmgr"; exit 1; }
+sudo efibootmgr --bootnext "$id" >/dev/null
+omarchy-system-reboot
