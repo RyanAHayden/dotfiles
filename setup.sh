@@ -36,4 +36,7 @@ sudo bash -c "
   rm /tmp/limine-entries.conf
 "
 
+echo "==> passwordless reboot-to-windows (efibootmgr --bootnext 0001)"
+sudo install -m 440 -o root -g root "$DOTFILES/etc/sudoers.d/reboot-to-windows" /etc/sudoers.d/reboot-to-windows
+
 echo "Done - check git changes since we adopted your default files"
