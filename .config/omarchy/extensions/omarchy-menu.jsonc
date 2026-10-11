@@ -40,7 +40,7 @@
     "action": "omarchy-launch-floating-terminal-with-presentation 'sudo ~/scripts/btsync-run.sh'"
   },
   "system.windows": {
-    "icon": "󰖳",
+    "icon": "",
     "label": "Reboot to Windows",
     "description": "Reboot once into Windows Boot Manager",
     "action": "~/bin/reboot-to-windows"
