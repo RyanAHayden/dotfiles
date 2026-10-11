@@ -1,7 +1,9 @@
 #!/bin/bash
 # One-shot reboot into Windows Boot Manager via UEFI BootNext.
-set -e
+# Passwordless via /etc/sudoers.d/reboot-to-windows (efibootmgr --bootnext 0001 only).
 id=$(efibootmgr | sed -n 's/^Boot\([0-9A-F]\{4\}\)\*\? Windows Boot Manager.*/\1/p' | head -1)
-[ -n "$id" ] || { echo "Windows Boot Manager not found in efibootmgr"; exit 1; }
-sudo efibootmgr --bootnext "$id" >/dev/null
+if [ -z "$id" ] || ! sudo -n efibootmgr --bootnext "$id" >/dev/null; then
+  notify-send -u critical "Reboot to Windows failed" "Couldn't set BootNext (Windows entry: ${id:-not found})"
+  exit 1
+fi
 omarchy-system-reboot
