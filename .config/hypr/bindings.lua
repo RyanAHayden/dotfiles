@@ -44,7 +44,7 @@ o.bind("SUPER + SHIFT + B", "Browser", "omarchy-launch-browser")
 
 hl.unbind("SUPER + SHIFT + ALT + B") -- was: Browser (private)
 o.bind("SUPER + SHIFT + ALT + B", "Browser (private)", "omarchy-launch-browser --private")
-o.bind("SUPER + SHIFT + M", "Music", "spotify")
+-- o.bind("SUPER + SHIFT + M", "Music", "spotifast")
 
 hl.unbind("SUPER + SHIFT + C") -- was: Calendar
 o.bind("SUPER + SHIFT + C", "Discord", "omarchy-launch-or-focus discord")
@@ -126,3 +126,7 @@ o.bind("SUPER + ALT + C", "Toggle CRT shader", "~/bin/toggle-crt.sh")
 -- Focus lock: new windows open without stealing focus
 hl.unbind("SUPER + SHIFT + O") -- was: Obsidian
 o.bind("SUPER + SHIFT + O", "Toggle focus lock", "~/bin/toggle-focus-lock.sh")
+
+-- Window opacity steps (SUPER + BACKSPACE still toggles fully opaque, which overrides these)
+o.bind("SUPER + ALT + BACKSPACE", "More window transparency", "~/bin/window-opacity.sh -0.05")
+o.bind("SUPER + SHIFT + ALT + BACKSPACE", "Less window transparency", "~/bin/window-opacity.sh +0.05")

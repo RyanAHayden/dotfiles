@@ -41,6 +41,10 @@ require("default.hypr.toggles")
 -- than its built-in floor.
 o.window({ class = "steam" }, { min_size = { 100, 100 } })
 
+-- Let CS2 tear (allow_tearing master toggle is in looknfeel.lua). Only
+-- takes effect when the window is fullscreen and solitary.
+o.window({ class = "cs2" }, { immediate = true })
+
 -- bluetui/wiremix terminal popups (SUPER+CTRL+B / SUPER+CTRL+A) float by default.
 o.window("bluetui", { float = true, center = true })
 o.window("wiremix", { float = true, center = true })
@@ -56,3 +60,16 @@ o.window({ tag = "drpopup" }, {
 	rounding = 0,
 	opacity = "1 1",
 })
+
+-- HST-Remastered test windows (the remaster's --shot runs are titled "Hot Shots Tennis (shot)";
+-- a normal launch is plain "Hot Shots Tennis" and opens normally; PCSX2 is class pcsx2-qt) open on workspace 1
+-- without taking focus, and drop under every other window there as soon as they map.
+-- ponytail: Hyprland draws floating windows above tiled ones, so a floating test
+-- window still covers a *tiled* focused window; float yours to keep it on top.
+o.window({ class = "^pcsx2-qt$" }, { workspace = "1 silent", no_initial_focus = true })
+o.window({ title = "^Hot Shots Tennis \\(shot\\)$" }, { workspace = "1 silent", no_initial_focus = true })
+hl.on("window.open", function(w)
+	if w.class == "pcsx2-qt" or w.title == "Hot Shots Tennis (shot)" then
+		hl.dispatch(hl.dsp.window.alter_zorder({ mode = "bottom", window = "address:" .. w.address }))
+	end
+end)

@@ -13,6 +13,16 @@
 --   },
 -- })
 
+-- Allow tearing (CS2 stutter troubleshooting). Master toggle only -- actual
+-- tearing per-window needs an `immediate = true` window rule too (see
+-- hyprland.lua), and only takes effect when that window is fullscreen and
+-- solitary. https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/
+hl.config({
+  general = {
+    allow_tearing = true,
+  },
+})
+
 -- https://wiki.hypr.land/Configuring/Basics/Variables/#decoration
 -- hl.config({
 --   decoration = {
