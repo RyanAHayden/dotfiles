@@ -141,3 +141,9 @@ hl.unbind("SUPER + mouse_down") -- was: Scroll active workspace forward
 hl.unbind("SUPER + mouse_up") -- was: Scroll active workspace backward
 o.bind("SUPER + mouse_down", "Send window behind", hl.dsp.window.alter_zorder({ mode = "bottom" }))
 o.bind("SUPER + mouse_up", "Bring window to front", hl.dsp.window.alter_zorder({ mode = "top" }))
+
+-- SUPER + ALT + scroll adjusts display brightness (replaces group next/prev)
+hl.unbind("SUPER + ALT + mouse_down") -- was: Next window in group
+hl.unbind("SUPER + ALT + mouse_up") -- was: Previous window in group
+o.bind("SUPER + ALT + mouse_up", "Brightness up 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display +5")
+o.bind("SUPER + ALT + mouse_down", "Brightness down 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display -5")
