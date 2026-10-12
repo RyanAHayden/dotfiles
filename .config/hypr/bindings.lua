@@ -130,3 +130,8 @@ o.bind("SUPER + SHIFT + O", "Toggle focus lock", "~/bin/toggle-focus-lock.sh")
 -- Window opacity steps (SUPER + BACKSPACE still toggles fully opaque, which overrides these)
 o.bind("SUPER + ALT + BACKSPACE", "More window transparency", "~/bin/window-opacity.sh -0.05")
 o.bind("SUPER + SHIFT + ALT + BACKSPACE", "Less window transparency", "~/bin/window-opacity.sh +0.05")
+
+-- Per-window volume for the window under the cursor
+o.bind("SUPER + SHIFT + mouse_up", "Window volume up", "~/bin/window-volume.sh +5%")
+o.bind("SUPER + SHIFT + mouse_down", "Window volume down", "~/bin/window-volume.sh -5%")
+o.bind("SUPER + SHIFT + mouse:273", "Toggle window mute", "~/bin/window-volume.sh mute")
