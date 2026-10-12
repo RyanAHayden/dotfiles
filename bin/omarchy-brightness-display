@@ -1,27 +1,42 @@
 #!/bin/bash
 # DDC/CI brightness control with Omarchy OSD overlay.
 # Usage: omarchy-brightness-display <step>   (e.g. +5, -5, +25, -25)
+#
+# The OSD updates instantly from a cached value; the monitor is written by one
+# ddcutil at a time and skips straight to the latest value. Never kill ddcutil
+# mid-write or run several at once: hammering DDC/CI this way coincided with the
+# GPU dropping off the bus (amdgpu "device lost from bus") on 2026-10-12.
 
 CACHE=/tmp/omarchy-brightness-display
+APPLIED=$CACHE.applied
+LOCK=$CACHE.lock
+SLEEP=1.0 # ddcutil --sleep-multiplier; lower is faster but caused DDC retries at 0.1
 
 step="${1:-+5}"
+[[ "$step" =~ ^[+-][0-9]+$ ]] || exit 1
 
-if [[ "$step" =~ ^[+-][0-9]+$ ]]; then
-  # Seed cache from monitor if missing
-  if [[ ! -f "$CACHE" ]]; then
-    ddcutil getvcp 10 2>/dev/null \
-      | grep -oE 'current value = *[0-9]+' \
-      | grep -oE '[0-9]+$' \
-      > "$CACHE"
-  fi
+exec 9>"$LOCK"
 
-  current="$(cat "$CACHE" 2>/dev/null || echo 50)"
-  new_val=$(( current + step ))
-  (( new_val < 0   )) && new_val=0
-  (( new_val > 100 )) && new_val=100
-
-  echo "$new_val" > "$CACHE"
-  omarchy-osd -i brightness -p "$new_val"
-  pkill -f "ddcutil.*setvcp" 2>/dev/null
-  ddcutil --noverify --sleep-multiplier 0.1 setvcp 10 "$new_val" 2>/dev/null &
+# Seed cache from monitor if missing (under the lock so it can't overlap a write)
+if [[ ! -f "$CACHE" ]]; then
+  flock 9
+  ddcutil --sleep-multiplier "$SLEEP" getvcp 10 2>/dev/null \
+    | grep -oE 'current value = *[0-9]+' | grep -oE '[0-9]+$' > "$CACHE"
+  cp "$CACHE" "$APPLIED"
+  flock -u 9
 fi
+
+current="$(cat "$CACHE" 2>/dev/null)"
+new_val=$(( ${current:-50} + step ))
+(( new_val < 0   )) && new_val=0
+(( new_val > 100 )) && new_val=100
+echo "$new_val" > "$CACHE"
+omarchy-osd -i brightness -p "$new_val"
+
+# Apply in the background, one writer at a time; queued runs find the latest value already applied and exit.
+(
+  flock 9
+  v="$(cat "$CACHE")"
+  [[ "$v" == "$(cat "$APPLIED" 2>/dev/null)" ]] && exit
+  ddcutil --noverify --sleep-multiplier "$SLEEP" setvcp 10 "$v" 2>/dev/null && echo "$v" > "$APPLIED"
+) &
