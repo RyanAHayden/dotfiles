@@ -57,3 +57,6 @@ hl.config({
 -- Enable touchpad gestures for moving focus (helpful on scrolling layout).
 -- hl.gesture({ fingers = 3, direction = "left", action = function() hl.dispatch(hl.dsp.focus({ direction = "l" })) end })
 -- hl.gesture({ fingers = 3, direction = "right", action = function() hl.dispatch(hl.dsp.focus({ direction = "r" })) end })
+
+-- Fire wheel binds on every step (default 300ms drops steps and leaks them to the app; used by window-volume.sh)
+hl.config({ binds = { scroll_event_delay = 0 } })
