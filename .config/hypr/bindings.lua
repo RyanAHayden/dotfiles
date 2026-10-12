@@ -136,8 +136,8 @@ o.bind("SUPER + SHIFT + mouse_up", "Window volume up", "~/bin/window-volume.sh +
 o.bind("SUPER + SHIFT + mouse_down", "Window volume down", "~/bin/window-volume.sh -5%")
 o.bind("SUPER + SHIFT + mouse:273", "Toggle window mute", "~/bin/window-volume.sh mute")
 
--- SUPER + scroll cycles windows in a group instead of switching workspaces
+-- SUPER + scroll restacks the hovered (= focused, follow_mouse) floating window instead of switching workspaces
 hl.unbind("SUPER + mouse_down") -- was: Scroll active workspace forward
 hl.unbind("SUPER + mouse_up") -- was: Scroll active workspace backward
-o.bind("SUPER + mouse_down", "Next window in group", hl.dsp.group.next())
-o.bind("SUPER + mouse_up", "Previous window in group", hl.dsp.group.prev())
+o.bind("SUPER + mouse_down", "Send window behind", hl.dsp.window.alter_zorder({ mode = "bottom" }))
+o.bind("SUPER + mouse_up", "Bring window to front", hl.dsp.window.alter_zorder({ mode = "top" }))
