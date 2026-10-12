@@ -1,0 +1,22 @@
+#!/bin/bash
+# Pin every currently connected monitor as "connected" until the next reboot.
+# Some monitors (LG UltraGear+ on DP) drop hotplug while DPMS-asleep; Hyprland then
+# sees zero monitors and crashes when a window maps. Forcing the connector on with
+# its current EDID keeps it present. Runtime-only: nothing persists across reboots.
+# Run as root (pin-monitors.service does it at boot). `pin-monitors off` unpins.
+set -eu
+
+for c in /sys/class/drm/card*-*; do
+  name=${c##*/}; conn=${name#*-}
+  [[ $conn == Writeback* ]] && continue
+  dbg=/sys/kernel/debug/dri/$(basename "$(readlink -f "$c/device/device")")/$conn
+  if [[ ${1:-} == off ]]; then
+    echo detect > "$c/status"
+    [[ -e $dbg/edid_override ]] && echo reset > "$dbg/edid_override"
+    continue
+  fi
+  [[ $(cat "$c/status") == connected ]] || continue
+  cat "$c/edid" > "$dbg/edid_override"
+  echo on > "$c/status"
+  echo "pinned $name"
+done
