@@ -25,6 +25,12 @@ echo "==> sddm theme (omarchy-red)"
 sudo cp -rT "$DOTFILES/etc/sddm-themes/omarchy-red" /usr/share/sddm/themes/omarchy-red
 sudo cp "$DOTFILES/etc/sddm.conf.d/10-theme.conf" /etc/sddm.conf.d/10-theme.conf
 
+echo "==> sddm greeter screen-off when idle (burn-in protection)"
+sudo pacman -S --needed hypridle
+sudo install -Dm644 "$DOTFILES/etc/sddm/hyprland.lua" /etc/sddm/hyprland.lua
+sudo install -Dm644 "$DOTFILES/etc/sddm/hypridle.conf" /etc/sddm/hypridle.conf
+sudo install -Dm644 "$DOTFILES/etc/sddm.conf.d/99-zz-greeter-idle.conf" /etc/sddm.conf.d/99-zz-greeter-idle.conf
+
 echo "==> boot logo (plymouth, via ryha-omarchy theme)"
 omarchy plymouth set by theme ryha-omarchy
 
