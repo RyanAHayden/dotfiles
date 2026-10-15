@@ -18,6 +18,20 @@
             "StayAwake",
             "Dictation"
           ]
+        },
+        {
+          "id": "focus-lock",
+          "type": "command",
+          "exec": "~/bin/bar-status.sh focus",
+          "interval": 2,
+          "onClick": "~/bin/toggle-focus-lock.sh"
+        },
+        {
+          "id": "tv-mirror",
+          "type": "command",
+          "exec": "~/bin/bar-status.sh mirror",
+          "interval": 2,
+          "onClick": "~/bin/toggle-monitor-mirror.sh"
         }
       ],
       "left": [
