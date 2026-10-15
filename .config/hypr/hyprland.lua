@@ -61,7 +61,7 @@ o.window({ tag = "drpopup" }, {
 	opacity = "1 1",
 })
 
--- HST-Remastered test windows (the remaster's --shot runs are titled "Hot Shots Tennis (shot)";
+-- open-tennis test windows (the remaster's --shot runs are titled "Hot Shots Tennis (shot)";
 -- a normal launch is plain "Hot Shots Tennis" and opens normally; PCSX2 is class pcsx2-qt) open on workspace 1
 -- without taking focus, and drop under every other window there as soon as they map.
 -- ponytail: Hyprland draws floating windows above tiled ones, so a floating test
