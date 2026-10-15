@@ -119,6 +119,9 @@ o.bind("SUPER + SHIFT + D", "Move window workspace right", hl.dsp.window.move({ 
 
 -- Toggle HDMI-A-1 mirroring DP-1 (built-in mirror toggle only covers laptop panels)
 o.bind("SUPER + CTRL + M", "Toggle monitor mirror", "~/bin/toggle-monitor-mirror.sh")
+-- Turn the TV output off/on without unplugging (also right-click the bar's TV icon)
+hl.unbind("SUPER + CTRL + O") -- was: Omarchy toggle menu
+o.bind("SUPER + CTRL + O", "Toggle TV output", "~/bin/toggle-tv-power.sh")
 
 -- Toggle CRT scanline/vignette screen shader
 o.bind("SUPER + ALT + C", "Toggle CRT shader", "~/bin/toggle-crt.sh")
