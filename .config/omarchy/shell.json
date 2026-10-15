@@ -31,7 +31,8 @@
           "type": "command",
           "exec": "~/bin/bar-status.sh mirror",
           "interval": 2,
-          "onClick": "~/bin/toggle-monitor-mirror.sh"
+          "onClick": "~/bin/toggle-monitor-mirror.sh",
+          "onRightClick": "~/bin/toggle-tv-power.sh"
         }
       ],
       "left": [
