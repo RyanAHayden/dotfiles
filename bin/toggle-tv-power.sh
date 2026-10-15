@@ -15,8 +15,12 @@ hyprctl reload >/dev/null
 sleep 0.5
 # TV back on in extended mode: it legitimately owns workspace 2, leave it be.
 [ ! -f "$FLAG" ] && grep -q 'mirror = "none"' "$(dirname "$FLAG")/monitor-mirror.lua" 2>/dev/null && exit 0
-# Workspaces left on the dead TV (or that spilled onto HEADLESS-KEEP) go back to DP-1, then the
-# headless output returns to its own empty workspace and focus lands on DP-1.
+# Workspaces left on the dead TV (or that spilled onto HEADLESS-KEEP) go back to DP-1.
 hyprctl workspaces -j | jq -r '.[] | select((.monitor == "HDMI-A-1" and (.name | startswith("special:") | not)) or (.monitor == "HEADLESS-KEEP" and .name != "keep")) | .name' |
 	while read -r ws; do hyprctl dispatch "hl.dsp.workspace.move({ workspace = \"$ws\", monitor = \"DP-1\" })" >/dev/null; done
-hyprctl --batch 'dispatch hl.dsp.focus({ monitor = "HEADLESS-KEEP" }) ; dispatch hl.dsp.focus({ workspace = "name:keep" }) ; dispatch hl.dsp.focus({ monitor = "DP-1" })' >/dev/null
+# Only if HEADLESS-KEEP lost its own workspace, put it back. Doing this unconditionally could flash the empty
+# keep workspace onto DP-1 (all windows "vanish").
+if [ "$(hyprctl monitors -j | jq -r '.[] | select(.name == "HEADLESS-KEEP") | .activeWorkspace.name')" != "keep" ]; then
+	hyprctl --batch 'dispatch hl.dsp.focus({ monitor = "HEADLESS-KEEP" }) ; dispatch hl.dsp.focus({ workspace = "name:keep" })' >/dev/null
+fi
+hyprctl dispatch 'hl.dsp.focus({ monitor = "DP-1" })' >/dev/null
