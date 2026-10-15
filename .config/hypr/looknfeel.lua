@@ -58,7 +58,3 @@ hl.config({
 --     column_width = 0.97,
 --   },
 -- })
-
--- Software cursor: the hardware cursor vanished on DP-1 when HDMI-A-1 was disabled/re-added (TV toggles)
--- until something forced a repaint.
-hl.config({ cursor = { no_hardware_cursors = 1 } })
