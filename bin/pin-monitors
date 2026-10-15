@@ -12,7 +12,7 @@ for c in /sys/class/drm/card*-*; do
   dbg=/sys/kernel/debug/dri/$(basename "$(readlink -f "$c/device/device")")/$conn
   if [[ ${1:-} == off ]]; then
     echo detect > "$c/status"
-    [[ -e $dbg/edid_override ]] && echo reset > "$dbg/edid_override"
+    [[ -e $dbg/edid_override ]] && printf reset > "$dbg/edid_override"  # kernel rejects a trailing newline
     continue
   fi
   [[ $(cat "$c/status") == connected ]] || continue

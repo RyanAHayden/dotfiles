@@ -48,6 +48,9 @@
           "id": "omarchy.tray"
         },
         {
+          "id": "hamsti.vitals"
+        },
+        {
           "id": "omarchy.agents"
         },
         {
@@ -69,15 +72,17 @@
           "id": "omarchy.power"
         },
         {
+          "id": "omarchy.clock",
           "format": "dddd hh:mm AP",
           "formatAlt": "d MMMM 'W'ww yyyy",
-          "id": "omarchy.clock",
-          "verticalFormat": "hh\n—\nmm\nAP"
+          "verticalFormat": "hh\n—\nmm\nAP",
+          "birthYear": 0,
+          "lifeExpectancy": 90
         }
       ]
     },
     "position": "top",
-    "transparent": true
+    "transparent": false
   },
   "idle": {
     "lock": 300,
