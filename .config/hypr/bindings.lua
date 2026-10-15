@@ -23,9 +23,9 @@ hl.unbind("XF86KbdLightOnOff")
 
 -- Applications (unbind the default assigned to each key first)
 o.bind(
-	"SUPER + ALT + RETURN",
-	"Tmux",
-	'uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" bash -c "tmux"'
+  "SUPER + ALT + RETURN",
+  "Tmux",
+  'uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" bash -c "tmux"'
 )
 
 hl.unbind("SUPER + ALT + SPACE")
@@ -35,9 +35,9 @@ hl.unbind("SUPER + SHIFT + RETURN") -- was: Browser
 o.bind("SUPER + SHIFT + RETURN", "Browser (Blank window)", "omarchy-launch-browser --blank-window")
 
 o.bind(
-	"SUPER + ALT + SHIFT + F",
-	"File manager (cwd)",
-	'uwsm-app -- nautilus --new-window "$(omarchy-cmd-terminal-cwd)"'
+  "SUPER + ALT + SHIFT + F",
+  "File manager (cwd)",
+  'uwsm-app -- nautilus --new-window "$(omarchy-cmd-terminal-cwd)"'
 )
 hl.unbind("SUPER + SHIFT + B") -- was: Browser
 o.bind("SUPER + SHIFT + B", "Browser", "omarchy-launch-browser")
@@ -75,14 +75,14 @@ o.bind("SHIFT + F24", "Brightness up 25%", "/home/ryha/dotfiles/bin/omarchy-brig
 
 -- Crosshair
 o.bind(
-	"F19",
-	"Show green crosshair",
-	"pkill crosshair; /home/ryha/.local/bin/crosshair/crosshair --image /home/ryha/.local/bin/crosshair/cross.png --gamma 1"
+  "F19",
+  "Show green crosshair",
+  "pkill crosshair; /home/ryha/.local/bin/crosshair/crosshair --image /home/ryha/.local/bin/crosshair/cross.png --gamma 1"
 )
 o.bind(
-	"XF86Launch9",
-	"Show dot crosshair",
-	"pkill crosshair; /home/ryha/.local/bin/crosshair/crosshair --image /home/ryha/.local/bin/crosshair/dot.png --gamma 1"
+  "XF86Launch9",
+  "Show dot crosshair",
+  "pkill crosshair; /home/ryha/.local/bin/crosshair/crosshair --image /home/ryha/.local/bin/crosshair/dot.png --gamma 1"
 )
 o.bind("XF86Tools", "Kill crosshair", "pkill crosshair")
 
@@ -117,11 +117,6 @@ o.bind("SUPER + SHIFT + A", "Move window workspace left", hl.dsp.window.move({ w
 hl.unbind("SUPER + SHIFT + D") -- was: Docker
 o.bind("SUPER + SHIFT + D", "Move window workspace right", hl.dsp.window.move({ workspace = "r+1" }))
 
--- Toggle HDMI-A-1 mirroring DP-1 (built-in mirror toggle only covers laptop panels)
-o.bind("SUPER + CTRL + M", "Toggle monitor mirror", "~/bin/toggle-monitor-mirror.sh")
-
--- Toggle CRT scanline/vignette screen shader
-o.bind("SUPER + ALT + C", "Toggle CRT shader", "~/bin/toggle-crt.sh")
 
 -- Focus lock: new windows open without stealing focus
 hl.unbind("SUPER + SHIFT + O") -- was: Obsidian
@@ -138,12 +133,12 @@ o.bind("SUPER + SHIFT + mouse:273", "Toggle window mute", "~/bin/window-volume.s
 
 -- SUPER + scroll restacks the hovered (= focused, follow_mouse) floating window instead of switching workspaces
 hl.unbind("SUPER + mouse_down") -- was: Scroll active workspace forward
-hl.unbind("SUPER + mouse_up") -- was: Scroll active workspace backward
+hl.unbind("SUPER + mouse_up")   -- was: Scroll active workspace backward
 o.bind("SUPER + mouse_down", "Send window behind", hl.dsp.window.alter_zorder({ mode = "bottom" }))
 o.bind("SUPER + mouse_up", "Bring window to front", hl.dsp.window.alter_zorder({ mode = "top" }))
 
 -- SUPER + ALT + scroll adjusts display brightness (replaces group next/prev)
 hl.unbind("SUPER + ALT + mouse_down") -- was: Next window in group
-hl.unbind("SUPER + ALT + mouse_up") -- was: Previous window in group
+hl.unbind("SUPER + ALT + mouse_up")   -- was: Previous window in group
 o.bind("SUPER + ALT + mouse_up", "Brightness up 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display +5")
 o.bind("SUPER + ALT + mouse_down", "Brightness down 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display -5")
