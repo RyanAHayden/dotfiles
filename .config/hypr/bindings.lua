@@ -123,9 +123,6 @@ o.bind("SUPER + CTRL + M", "Toggle monitor mirror", "~/bin/toggle-monitor-mirror
 hl.unbind("SUPER + CTRL + O") -- was: Omarchy toggle menu
 o.bind("SUPER + CTRL + O", "Toggle TV output", "~/bin/toggle-tv-power.sh")
 
--- Toggle CRT scanline/vignette screen shader
-o.bind("SUPER + ALT + C", "Toggle CRT shader", "~/bin/toggle-crt.sh")
-
 -- Focus lock: new windows open without stealing focus
 hl.unbind("SUPER + SHIFT + O") -- was: Obsidian
 o.bind("SUPER + SHIFT + O", "Toggle focus lock", "~/bin/toggle-focus-lock.sh")
