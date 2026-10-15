@@ -1,60 +1,109 @@
 #!/usr/bin/env python3
 # Hold Omarchy's stay-awake while any gamepad is in use; release after QUIET seconds.
 # Hyprland's idle tracking ignores gamepads, so the screensaver/lock fired mid-game.
-import os, select, sys, time
+# The idle service watches FLAG, so touching/removing it is the whole interface.
+import os, select, signal, sys, time
 import evdev
 from evdev import ecodes as e
 
-QUIET = 60      # seconds of no controller input before idle is allowed again
+QUIET = 60       # seconds of no controller input before idle is allowed again
 DEADZONE = 0.15  # fraction of axis range; ignores stick drift
+POLL = 2         # seconds between /dev/input hotplug checks
 FLAG = os.path.expanduser("~/.local/state/omarchy/indicators/stay-awake")
+# Marks that WE created FLAG. Lives on tmpfs, so a reboot clears it along with any confusion.
+OURS = os.path.join(os.environ.get("XDG_RUNTIME_DIR", "/tmp"), "gamepad-stay-awake.held")
 
-def gamepads():
-    pads = {}
-    for path in evdev.list_devices():
-        try:
-            d = evdev.InputDevice(path)
-            if e.BTN_SOUTH in d.capabilities().get(e.EV_KEY, []):
-                pads[d.fd] = d
-            else:
-                d.close()
-        except OSError:
-            pass
-    return pads
 
-def moved(dev, ev):
-    if ev.type == e.EV_KEY:
+def moved(etype, value, axis):
+    """axis = (min, max, rest) for EV_ABS, None otherwise. rest = value at open
+    (sticks rest centered, triggers rest at min)."""
+    if etype == e.EV_KEY:
         return True
-    if ev.type != e.EV_ABS:
+    if etype != e.EV_ABS or axis is None:
         return False
-    info = dev.absinfo(ev.code)
-    span = info.max - info.min
-    if span <= 2:  # d-pad hats
-        return ev.value != 0
-    center = (info.max + info.min) / 2
-    return abs(ev.value - center) > span * DEADZONE
+    lo, hi, rest = axis
+    span = hi - lo
+    if span <= 2:  # d-pad hats: -1/0/1
+        return value != 0
+    return abs(value - rest) > span * DEADZONE
 
-held = False  # True only if we created the flag, so a manual stay-awake is left alone
-last = 0.0
-pads, rescan = {}, 0.0
-while True:
-    now = time.monotonic()
-    if now >= rescan:  # pick up hotplugged / bluetooth controllers
-        for d in pads.values():
-            d.close()
-        pads, rescan = gamepads(), now + 5
-    ready = select.select(list(pads), [], [], 1)[0] if pads else (time.sleep(1) or [])
-    for fd in ready:
-        dev = pads[fd]
-        try:
-            if any(moved(dev, ev) for ev in dev.read()):
-                last = time.monotonic()
-        except OSError:  # unplugged
-            rescan = 0
-    active = time.monotonic() - last < QUIET
-    if active and not held and not os.path.exists(FLAG):
-        os.system("omarchy-toggle-idle stay-awake >/dev/null")
-        held = True
-    elif not active and held:
-        os.system("omarchy-toggle-idle allow-idle >/dev/null")
-        held = False
+
+def hold():
+    os.makedirs(os.path.dirname(FLAG), exist_ok=True)
+    open(OURS, "w").close()
+    open(FLAG, "a").close()
+
+
+def release():
+    if os.path.exists(OURS):  # never remove a stay-awake the user set
+        for p in (FLAG, OURS):
+            try:
+                os.unlink(p)
+            except FileNotFoundError:
+                pass
+
+
+def main():
+    release()  # clean up after a previous run that was killed while holding
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
+    signal.signal(signal.SIGHUP, lambda *_: sys.exit(0))
+
+    pads = {}      # fd -> (device, {abs code: (min, max)})
+    seen = set()   # every /dev/input path already examined (pad or not)
+    last, held, next_scan = 0.0, False, 0.0
+    try:
+        while True:
+            now = time.monotonic()
+            if now >= next_scan:  # open only new devices; forget vanished ones
+                paths = set(evdev.list_devices())
+                seen &= paths
+                for path in paths - seen:
+                    seen.add(path)
+                    try:
+                        d = evdev.InputDevice(path)
+                    except OSError:
+                        continue
+                    caps = d.capabilities(absinfo=True)
+                    if e.BTN_SOUTH in caps.get(e.EV_KEY, []):
+                        pads[d.fd] = (d, {c: (i.min, i.max, i.value) for c, i in caps.get(e.EV_ABS, [])})
+                    else:
+                        d.close()
+                next_scan = now + POLL
+
+            for fd in select.select(list(pads), [], [], POLL)[0]:
+                d, axes = pads[fd]
+                try:
+                    if any(moved(ev.type, ev.value, axes.get(ev.code)) for ev in d.read()):
+                        last = time.monotonic()
+                except OSError:  # unplugged; next scan reopens it if it comes back
+                    del pads[fd]
+                    seen.discard(d.path)
+                    d.close()
+
+            if held and not os.path.exists(FLAG):
+                release()  # user toggled stay-awake off by hand; drop our marker
+                held = False
+            active = time.monotonic() - last < QUIET
+            if active and not held and not os.path.exists(FLAG):
+                hold()
+                held = True
+            elif not active and held:
+                release()
+                held = False
+    finally:
+        if held:
+            release()
+
+
+if __name__ == "__main__":
+    if sys.argv[1:] == ["--test"]:
+        stick, hat, trig = (-32768, 32767, 0), (-1, 1, 0), (0, 255, 0)
+        assert moved(e.EV_KEY, 1, None)
+        assert not moved(e.EV_ABS, 1200, stick)       # drift
+        assert moved(e.EV_ABS, 20000, stick)
+        assert not moved(e.EV_ABS, 5, trig) and moved(e.EV_ABS, 200, trig)
+        assert not moved(e.EV_ABS, 0, hat) and moved(e.EV_ABS, -1, hat)
+        assert not moved(e.EV_SYN, 0, None)
+        print("ok")
+    else:
+        main()
