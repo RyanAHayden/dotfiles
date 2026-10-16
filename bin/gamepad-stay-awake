@@ -64,7 +64,9 @@ def main():
                     except OSError:
                         continue
                     caps = d.capabilities(absinfo=True)
-                    if e.BTN_SOUTH in caps.get(e.EV_KEY, []):
+                    # Skip uinput vpads (e.g. Steam Input): the real pad behind them has its own node.
+                    virtual = "/virtual/" in os.path.realpath(f"/sys/class/input/{os.path.basename(path)}")
+                    if e.BTN_SOUTH in caps.get(e.EV_KEY, []) and not virtual:
                         pads[d.fd] = (d, {c: (i.min, i.max, i.value) for c, i in caps.get(e.EV_ABS, [])})
                     else:
                         d.close()
