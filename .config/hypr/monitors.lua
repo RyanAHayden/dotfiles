@@ -26,3 +26,13 @@ hl.workspace_rule({ workspace = "name:keep", monitor = "HEADLESS-KEEP", default 
 hl.on("monitor.added", function()
   hl.exec_cmd([[sleep 1; hyprctl workspaces -j | jq -r '.[] | select(.monitor == "HEADLESS-KEEP" and .name != "keep") | .name' | while read -r ws; do hyprctl dispatch "hl.dsp.workspace.move({ workspace = \"$ws\", monitor = \"DP-1\" })"; done; hyprctl --batch 'dispatch hl.dsp.focus({ monitor = "HEADLESS-KEEP" }) ; dispatch hl.dsp.focus({ workspace = "name:keep" }) ; dispatch hl.dsp.focus({ monitor = "DP-1" })']])
 end)
+-- ponytail: part of the same temporary workaround; remove with HEADLESS-KEEP.
+-- Bounce focus off HEADLESS-KEEP to a real monitor so new windows never land there. Skipped while it shows a
+-- stray workspace, so the restore-`keep` batches above and in toggle-tv-power.sh can still focus it.
+hl.on("monitor.focused", function(m)
+  if not m or m.name ~= "HEADLESS-KEEP" or not m.active_workspace or m.active_workspace.name ~= "keep" then return end
+  for _, o in ipairs(hl.get_monitors()) do
+    -- Async: dispatching focus inside the focus event gets overridden by the focus still in progress.
+    if o.name ~= "HEADLESS-KEEP" then return hl.exec_cmd("hyprctl dispatch 'hl.dsp.focus({ monitor = \"" .. o.name .. "\" })'") end
+  end
+end)
