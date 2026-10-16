@@ -64,8 +64,10 @@ def main():
                     except OSError:
                         continue
                     caps = d.capabilities(absinfo=True)
-                    # Skip uinput vpads (e.g. Steam Input): the real pad behind them has its own node.
+                    # Skip uinput vpads (bots/tools), except Steam Input's: it only moves when a person does, and a
+                    # Steam Controller/Deck has no other node while Steam owns it. 0x28de = Valve.
                     virtual = "/virtual/" in os.path.realpath(f"/sys/class/input/{os.path.basename(path)}")
+                    virtual = virtual and d.info.vendor != 0x28DE
                     if e.BTN_SOUTH in caps.get(e.EV_KEY, []) and not virtual:
                         pads[d.fd] = (d, {c: (i.min, i.max, i.value) for c, i in caps.get(e.EV_ABS, [])})
                     else:
