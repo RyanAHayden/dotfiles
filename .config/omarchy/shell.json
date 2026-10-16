@@ -63,13 +63,13 @@
           "id": "omarchy.network"
         },
         {
-          "id": "omarchy.monitor"
-        },
-        {
           "id": "omarchy.keyboard-layout"
         },
         {
           "id": "omarchy.power"
+        },
+        {
+          "id": "omarchy.monitor"
         },
         {
           "id": "omarchy.clock",
