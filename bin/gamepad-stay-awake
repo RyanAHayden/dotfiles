@@ -55,7 +55,7 @@ def main():
         while True:
             now = time.monotonic()
             if now >= next_scan:  # open only new devices; forget vanished ones
-                paths = set(evdev.list_devices())
+                paths = set(evdev.list_devices(writable=False))  # pads can be read-only (mask r--)
                 seen &= paths
                 for path in paths - seen:
                     seen.add(path)
