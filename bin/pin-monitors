@@ -5,8 +5,8 @@
 # its current EDID keeps it present. Runtime-only: nothing persists across reboots.
 # Run as root (pin-monitors.service does it at boot). `pin-monitors off` unpins.
 # Only DP connectors: the TV (HDMI) should still look unplugged when it's off.
-# After switching the LG's dual mode (4K@240 <-> 1080p@480) the pinned EDID is stale, re-pin with:
-#   sudo systemctl restart pin-monitors   (unpins, waits for DP-1, pins the new EDID)
+# To switch the LG dual mode (4K@240 <-> 1080p@480): unpin, switch, re-pin (pin-monitors-toggle does it):
+#   sudo systemctl stop pin-monitors; <switch mode>; sudo systemctl start pin-monitors
 # The service runs a root-owned copy: sudo install -m755 ~/dotfiles/bin/pin-monitors /usr/local/bin/
 set -eu
 
@@ -15,8 +15,8 @@ for c in /sys/class/drm/card*-*; do
   [[ $conn == Writeback* ]] && continue
   dbg=/sys/kernel/debug/dri/$(basename "$(readlink -f "$c/device/device")")/$conn
   if [[ ${1:-} == off ]]; then
+    [[ -e $dbg/edid_override ]] && printf reset > "$dbg/edid_override"  # kernel rejects a trailing newline; reset before detect or the probe rereads the override
     echo detect > "$c/status"
-    [[ -e $dbg/edid_override ]] && printf reset > "$dbg/edid_override"  # kernel rejects a trailing newline
     continue
   fi
   [[ $conn == DP-* && $(cat "$c/status") == connected ]] || continue

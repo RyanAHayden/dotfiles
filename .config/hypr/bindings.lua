@@ -147,3 +147,6 @@ hl.unbind("SUPER + ALT + mouse_down") -- was: Next window in group
 hl.unbind("SUPER + ALT + mouse_up") -- was: Previous window in group
 o.bind("SUPER + ALT + mouse_up", "Brightness up 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display +5")
 o.bind("SUPER + ALT + mouse_down", "Brightness down 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display -5")
+
+-- Toggle DP-1 pin: press, switch LG dual mode (4K@240 <-> 1080p@480), press again
+o.bind("SUPER + CTRL + ALT + O", "Toggle monitor pin (dual-mode switch)", "~/bin/pin-monitors-toggle")
