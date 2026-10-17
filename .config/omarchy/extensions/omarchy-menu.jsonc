@@ -44,5 +44,11 @@
     "label": "Reboot to Windows",
     "description": "Reboot once into Windows Boot Manager",
     "action": "~/bin/reboot-to-windows"
+  },
+  "system.repin-monitor": {
+    "icon": "󰍹",
+    "label": "Toggle Monitor Pin",
+    "description": "Unpin, switch LG dual mode, then toggle again to re-pin",
+    "action": "~/bin/pin-monitors-toggle"
   }
 }

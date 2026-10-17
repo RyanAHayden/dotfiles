@@ -1,0 +1,8 @@
+#!/bin/bash
+# Toggle the DP monitor pin (see pin-monitors). To switch the LG's dual mode:
+# press once (unpin), switch the mode on the monitor, press again (pin the new EDID).
+if systemctl is-active -q pin-monitors; then
+  sudo -n systemctl stop pin-monitors && notify-send 'Monitor unpinned' 'Switch the dual mode, then press again to re-pin'
+else
+  sudo -n systemctl start pin-monitors && notify-send 'Monitor pinned'
+fi || notify-send -u critical 'pin-monitors toggle failed'

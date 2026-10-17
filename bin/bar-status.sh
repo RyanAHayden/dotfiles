@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Omarchy bar command-module output: bar-status.sh mirror|focus. Prints nothing when there's nothing to show.
+# Omarchy bar command-module output: bar-status.sh mirror|focus|pin. Prints nothing when there's nothing to show.
 case "$1" in
 mirror)
 	# Live state, not the toggle's flag file: they can disagree (e.g. after a TV replug).
@@ -13,6 +13,10 @@ mirror)
 focus)
 	[ -f "$HOME/.local/state/omarchy/toggles/hypr/focus-lock.lua" ] &&
 		echo '{"text":"󰌾","tooltip":"Focus lock on (SUPER+SHIFT+O)","class":"active"}'
+	;;
+pin)
+	systemctl is-active -q pin-monitors &&
+		echo '{"text":"󰐃","tooltip":"Monitor pinned (click or SUPER+CTRL+ALT+O to unpin for a dual-mode switch)"}'
 	;;
 esac
 exit 0
