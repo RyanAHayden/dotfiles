@@ -95,7 +95,11 @@
     "lock": 300,
     "screensaver": 150
   },
-  "plugins": [],
+  "plugins": [
+    {
+      "id": "local.window-labels"
+    }
+  ],
   "version": 1,
   "disabledPlugins": [
     "omarchy.battery",
