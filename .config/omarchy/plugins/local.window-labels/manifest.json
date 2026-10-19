@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "local.window-labels",
+  "name": "Window labels",
+  "version": "1.0.0",
+  "description": "Toggleable overlay labelling each visible window with its title, program, and PID.",
+  "kinds": ["service"],
+  "entryPoints": {
+    "service": "Service.qml"
+  }
+}
