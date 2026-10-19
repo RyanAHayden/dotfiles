@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
 
@@ -9,7 +10,7 @@ Item {
 
   property var shell: null
   property bool shown: false
-  property var labels: []
+  property var programs: ({}) // pid -> /proc/<pid>/comm
 
   // While shown, an Omarchy Hyprland toggle file widens the gap above every
   // window by labelHeight (defaults: gaps_in 5, gaps_out 10) so labels sit
@@ -31,36 +32,69 @@ Item {
     function toggle(): string {
       root.shown = !root.shown
       root.setGaps(root.shown)
-      if (root.shown) probe.running = true
+      if (root.shown) refresh.restart()
       return root.shown ? "on" : "off"
     }
   }
 
-  // ponytail: polls hyprctl every 300ms while shown; switch to Hyprland.rawEvent if that ever matters
-  Timer {
-    interval: 300
-    repeat: true
-    running: root.shown
-    onTriggered: if (!probe.running) probe.running = true
+  // Window geometry and pids live in lastIpcObject, which only updates on
+  // refreshToplevels(). Refresh on any Hyprland event (coalesced), plus every
+  // second for resizes, which emit no event. Workspace switches need no
+  // refresh: the monitor's activeWorkspace is tracked live.
+  Connections {
+    target: Hyprland
+    enabled: root.shown
+    function onRawEvent(event) { refresh.restart() }
   }
 
-  // One TSV row per window on a visible (active or special) workspace:
-  // monitor, x, y relative to that monitor, width, pid, program, title.
+  Timer {
+    id: refresh
+    interval: 16
+    onTriggered: {
+      Hyprland.refreshToplevels()
+      Hyprland.refreshMonitors()
+      root.fetchPrograms()
+    }
+  }
+
+  Timer {
+    interval: 1000
+    repeat: true
+    running: root.shown
+    onTriggered: refresh.restart()
+  }
+
+  function fetchPrograms() {
+    const missing = Hyprland.toplevels.values
+      .map(t => t.lastIpcObject.pid)
+      .filter(pid => pid > 0 && !(pid in root.programs))
+    if (missing.length === 0 || comm.running) return
+    comm.command = ["bash", "-c", "for p; do printf '%s\\t%s\\n' \"$p\" \"$(cat /proc/$p/comm 2>/dev/null)\"; done", "_"].concat(missing.map(String))
+    comm.running = true
+  }
+
   Process {
-    id: probe
-    command: ["bash", "-c",
-      "jq -r -n --argjson c \"$(hyprctl -j clients)\" --argjson m \"$(hyprctl -j monitors)\" " +
-      "'$m[] as $o | $c[] | select(.mapped and .monitor == $o.id and (.workspace.id == $o.activeWorkspace.id or .workspace.id == $o.specialWorkspace.id)) " +
-      "| [$o.name, .at[0] - $o.x, .at[1] - $o.y, .size[0], .pid, .title] | @tsv' | " +
-      "while IFS=$'\\t' read -r mon x y w pid title; do " +
-      "printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' \"$mon\" \"$x\" \"$y\" \"$w\" \"$pid\" \"$(cat /proc/$pid/comm 2>/dev/null)\" \"$title\"; done"]
+    id: comm
     stdout: StdioCollector {
       waitForEnd: true
-      onStreamFinished: root.labels = text.split("\n").filter(l => l).map(l => {
-        const f = l.split("\t")
-        return { monitor: f[0], x: +f[1], y: +f[2], w: +f[3], pid: f[4], program: f[5], title: f.slice(6).join("\t") }
-      })
+      onStreamFinished: {
+        const next = Object.assign({}, root.programs)
+        text.split("\n").filter(l => l).forEach(l => {
+          const f = l.split("\t")
+          next[f[0]] = f[1]
+        })
+        root.programs = next
+      }
     }
+  }
+
+  function visibleOn(t, screenName) {
+    const ws = t.workspace
+    const mon = t.monitor
+    if (!ws || !mon || mon.name !== screenName || !t.lastIpcObject.mapped) return false
+    if (ws === mon.activeWorkspace) return true
+    const special = mon.lastIpcObject.specialWorkspace
+    return !!special && special.id === ws.id
   }
 
   Variants {
@@ -79,13 +113,15 @@ Item {
       mask: Region {}
 
       Repeater {
-        model: root.labels.filter(l => l.monitor === win.modelData.name)
+        model: root.shown ? Hyprland.toplevels.values.filter(t => root.visibleOn(t, win.modelData.name)) : []
 
         Rectangle {
           required property var modelData
-          width: Math.min(text.implicitWidth, modelData.w - 32) + 16
-          x: modelData.x + (modelData.w - width) / 2
-          y: modelData.y - height - 4
+          readonly property var ipc: modelData.lastIpcObject
+          readonly property int w: ipc.size ? ipc.size[0] : 0
+          width: Math.min(text.implicitWidth, w - 32) + 16
+          x: (ipc.at ? ipc.at[0] : 0) - win.modelData.x + (w - width) / 2
+          y: (ipc.at ? ipc.at[1] : 0) - win.modelData.y - height - 4
           height: root.labelHeight
           radius: 4
           color: "#cc000000"
@@ -99,7 +135,7 @@ Item {
             color: "white"
             font.family: "monospace"
             font.pixelSize: 12
-            text: parent.modelData.title + "  ·  " + parent.modelData.program + " · pid " + parent.modelData.pid
+            text: parent.modelData.title + "  ·  " + (root.programs[parent.ipc.pid] || "?") + " · pid " + parent.ipc.pid
           }
         }
       }
