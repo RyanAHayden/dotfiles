@@ -92,6 +92,8 @@ Item {
     const ws = t.workspace
     const mon = t.monitor
     if (!ws || !mon || mon.name !== screenName || !t.lastIpcObject.mapped) return false
+    // Grouped windows already show their title in the groupbar.
+    if ((t.lastIpcObject.grouped || []).length > 0) return false
     if (ws === mon.activeWorkspace) return true
     const special = mon.lastIpcObject.specialWorkspace
     return !!special && special.id === ws.id
