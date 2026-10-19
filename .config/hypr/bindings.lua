@@ -150,3 +150,6 @@ o.bind("SUPER + ALT + mouse_down", "Brightness down 5%", "/home/ryha/dotfiles/bi
 
 -- Toggle DP-1 pin: press, switch LG dual mode (4K@240 <-> 1080p@480), press again
 o.bind("SUPER + CTRL + ALT + O", "Toggle monitor pin (dual-mode switch)", "~/bin/pin-monitors-toggle")
+
+-- Pick a window by title and focus it
+o.bind("SUPER + ALT + W", "Window picker", "~/bin/window-picker.sh")
