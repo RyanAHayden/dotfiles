@@ -3,7 +3,7 @@
 # Some monitors (LG UltraGear+ on DP) drop hotplug while DPMS-asleep; Hyprland then
 # sees zero monitors and crashes when a window maps. Forcing the connector on with
 # its current EDID keeps it present. Runtime-only: nothing persists across reboots.
-# Run as root (pin-monitors.service does it at boot). `pin-monitors off` unpins.
+# Run as root (via pin-monitors.service; not enabled at boot, it forced 60Hz). `pin-monitors off` unpins.
 # Only DP connectors: the TV (HDMI) should still look unplugged when it's off.
 # To switch the LG dual mode (4K@240 <-> 1080p@480): unpin, switch, re-pin (pin-monitors-toggle does it):
 #   sudo systemctl stop pin-monitors; <switch mode>; sudo systemctl start pin-monitors
