@@ -11,10 +11,26 @@ Item {
   property bool shown: false
   property var labels: []
 
+  // While shown, an Omarchy Hyprland toggle file widens the gap above every
+  // window by labelHeight (defaults: gaps_in 5, gaps_out 10) so labels sit
+  // in that gap instead of over content, like a groupbar.
+  readonly property int labelHeight: 20
+  readonly property string gapsFile: Quickshell.env("HOME") + "/.local/state/omarchy/toggles/hypr/window-labels.lua"
+
+  function setGaps(on) {
+    Quickshell.execDetached(["bash", "-c", on
+      ? "mkdir -p \"${1%/*}\" && echo 'hl.config({ general = { gaps_in = { top = " + (5 + labelHeight + 4) + ", right = 5, bottom = 5, left = 5 }, gaps_out = { top = " + (10 + labelHeight + 4) + ", right = 10, bottom = 10, left = 10 } } })' > \"$1\" && hyprctl reload"
+      : "[ -f \"$1\" ] && rm \"$1\" && hyprctl reload", "_", gapsFile])
+  }
+
+  // A shell restart drops `shown`, so drop a leftover gap file with it.
+  Component.onCompleted: setGaps(false)
+
   IpcHandler {
     target: "windowlabels"
     function toggle(): string {
       root.shown = !root.shown
+      root.setGaps(root.shown)
       if (root.shown) probe.running = true
       return root.shown ? "on" : "off"
     }
@@ -69,8 +85,8 @@ Item {
           required property var modelData
           width: Math.min(text.implicitWidth, modelData.w - 32) + 16
           x: modelData.x + (modelData.w - width) / 2
-          y: modelData.y + 6
-          height: text.implicitHeight + 10
+          y: modelData.y - height - 4
+          height: root.labelHeight
           radius: 4
           color: "#cc000000"
 
@@ -82,7 +98,7 @@ Item {
             elide: Text.ElideMiddle
             color: "white"
             font.family: "monospace"
-            font.pixelSize: 13
+            font.pixelSize: 12
             text: parent.modelData.title + "  ·  " + parent.modelData.program + " · pid " + parent.modelData.pid
           }
         }
