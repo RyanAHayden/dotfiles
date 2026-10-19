@@ -82,7 +82,7 @@
           "id": "omarchy.clock",
           "format": "dddd hh:mm AP",
           "formatAlt": "d MMMM 'W'ww yyyy",
-          "verticalFormat": "hh\n\u2014\nmm\nAP",
+          "verticalFormat": "hh\n—\nmm\nAP",
           "birthYear": 0,
           "lifeExpectancy": 90
         }
