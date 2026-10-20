@@ -28,6 +28,10 @@ def moved(etype, value, axis):
     return abs(value - rest) > span * DEADZONE
 
 
+def is_uinput(syspath):
+    return "/devices/virtual/input/" in syspath
+
+
 def hold():
     os.makedirs(os.path.dirname(FLAG), exist_ok=True)
     open(OURS, "w").close()
@@ -66,7 +70,8 @@ def main():
                     caps = d.capabilities(absinfo=True)
                     # Skip uinput vpads (bots/tools), except Steam Input's: it only moves when a person does, and a
                     # Steam Controller/Deck has no other node while Steam owns it. 0x28de = Valve.
-                    virtual = "/virtual/" in os.path.realpath(f"/sys/class/input/{os.path.basename(path)}")
+                    # uinput lives under /devices/virtual/input/; Bluetooth pads are uhid (/devices/virtual/misc/uhid/) and real.
+                    virtual = is_uinput(os.path.realpath(f"/sys/class/input/{os.path.basename(path)}"))
                     virtual = virtual and d.info.vendor != 0x28DE
                     if e.BTN_SOUTH in caps.get(e.EV_KEY, []) and not virtual:
                         pads[d.fd] = (d, {c: (i.min, i.max, i.value) for c, i in caps.get(e.EV_ABS, [])})
@@ -108,6 +113,8 @@ if __name__ == "__main__":
         assert not moved(e.EV_ABS, 5, trig) and moved(e.EV_ABS, 200, trig)
         assert not moved(e.EV_ABS, 0, hat) and moved(e.EV_ABS, -1, hat)
         assert not moved(e.EV_SYN, 0, None)
+        assert is_uinput("/sys/devices/virtual/input/input39/event20")
+        assert not is_uinput("/sys/devices/virtual/misc/uhid/0005:045E:02E0.001C/input/input49/event21")
         print("ok")
     else:
         main()
