@@ -2,6 +2,7 @@
 # Hold Omarchy's stay-awake while any gamepad is in use; release after QUIET seconds.
 # Hyprland's idle tracking ignores gamepads, so the screensaver/lock fired mid-game.
 # The idle service watches FLAG, so touching/removing it is the whole interface.
+# Ours when FLAG holds MARK; a manual toggle (touch) leaves it empty, so we never remove the user's.
 import os, select, signal, sys, time
 import evdev
 from evdev import ecodes as e
@@ -10,8 +11,7 @@ QUIET = 60       # seconds of no controller input before idle is allowed again
 DEADZONE = 0.15  # fraction of axis range; ignores stick drift
 POLL = 2         # seconds between /dev/input hotplug checks
 FLAG = os.path.expanduser("~/.local/state/omarchy/indicators/stay-awake")
-# Marks that WE created FLAG. Lives on tmpfs, so a reboot clears it along with any confusion.
-OURS = os.path.join(os.environ.get("XDG_RUNTIME_DIR", "/tmp"), "gamepad-stay-awake.held")
+MARK = "gamepad"  # bar-status.sh awake reads this too
 
 
 def moved(etype, value, axis):
@@ -32,19 +32,32 @@ def is_uinput(syspath):
     return "/devices/virtual/input/" in syspath
 
 
+def ours():
+    try:
+        with open(FLAG) as f:
+            return f.read().strip() == MARK
+    except FileNotFoundError:
+        return False
+
+
 def hold():
+    """Create FLAG only if absent (O_EXCL: can't clobber a manual set). True if we now hold it."""
     os.makedirs(os.path.dirname(FLAG), exist_ok=True)
-    open(OURS, "w").close()
-    open(FLAG, "a").close()
+    try:
+        fd = os.open(FLAG, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+    except FileExistsError:
+        return False
+    os.write(fd, MARK.encode())
+    os.close(fd)
+    return True
 
 
 def release():
-    if os.path.exists(OURS):  # never remove a stay-awake the user set
-        for p in (FLAG, OURS):
-            try:
-                os.unlink(p)
-            except FileNotFoundError:
-                pass
+    if ours():  # never remove a stay-awake the user set
+        try:
+            os.unlink(FLAG)
+        except FileNotFoundError:
+            pass
 
 
 def main():
@@ -54,7 +67,9 @@ def main():
 
     pads = {}      # fd -> (device, {abs code: (min, max)})
     seen = set()   # every /dev/input path already examined (pad or not)
-    last, held, next_scan = 0.0, False, 0.0
+    # -inf, not 0: monotonic counts from boot, so 0 looked like "pad used just now" right after login
+    last, held, next_scan = float("-inf"), False, 0.0
+    vetoed = False  # user switched it off mid-play; don't retake it until the pad goes quiet
     try:
         while True:
             now = time.monotonic()
@@ -89,13 +104,14 @@ def main():
                     seen.discard(d.path)
                     d.close()
 
-            if held and not os.path.exists(FLAG):
-                release()  # user toggled stay-awake off by hand; drop our marker
-                held = False
+            if held and not ours():
+                held = False  # user toggled it off (or off then on, making it theirs)
+                vetoed = not os.path.exists(FLAG)
             active = time.monotonic() - last < QUIET
-            if active and not held and not os.path.exists(FLAG):
-                hold()
-                held = True
+            if not active:
+                vetoed = False
+            if active and not held and not vetoed:
+                held = hold()
             elif not active and held:
                 release()
                 held = False
@@ -115,6 +131,13 @@ if __name__ == "__main__":
         assert not moved(e.EV_SYN, 0, None)
         assert is_uinput("/sys/devices/virtual/input/input39/event20")
         assert not is_uinput("/sys/devices/virtual/misc/uhid/0005:045E:02E0.001C/input/input49/event21")
+        import tempfile
+        FLAG = os.path.join(tempfile.mkdtemp(), "stay-awake")
+        assert hold() and ours() and not hold()   # second hold doesn't double-claim
+        release(); assert not os.path.exists(FLAG)
+        open(FLAG, "w").close()                   # manual set
+        assert not hold() and not ours()
+        release(); assert os.path.exists(FLAG)    # manual survives our release
         print("ok")
     else:
         main()

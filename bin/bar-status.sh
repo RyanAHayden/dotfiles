@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Omarchy bar command-module output: bar-status.sh mirror|focus|pin. Prints nothing when there's nothing to show.
+# Omarchy bar command-module output: bar-status.sh mirror|focus|pin|awake. Prints nothing when there's nothing to show.
 case "$1" in
 mirror)
 	# Live state, not the toggle's flag file: they can disagree (e.g. after a TV replug).
@@ -17,6 +17,11 @@ focus)
 pin)
 	systemctl is-active -q pin-monitors &&
 		echo '{"text":"󰐃","tooltip":"Monitor pinned (click or SUPER+CTRL+ALT+O to unpin for a dual-mode switch)"}'
+	;;
+awake)
+	# Only the controller's hold; a manual stay-awake shows on Omarchy's own indicator.
+	[ "$(cat "$HOME/.local/state/omarchy/indicators/stay-awake" 2>/dev/null)" = gamepad ] &&
+		echo '{"text":"󰊴","tooltip":"Kept awake by controller (click to allow idle)","class":"active"}'
 	;;
 esac
 exit 0
