@@ -69,7 +69,6 @@ def main():
     seen = set()   # every /dev/input path already examined (pad or not)
     # -inf, not 0: monotonic counts from boot, so 0 looked like "pad used just now" right after login
     last, held, next_scan = float("-inf"), False, 0.0
-    vetoed = False  # user switched it off mid-play; don't retake it until the pad goes quiet
     try:
         while True:
             now = time.monotonic()
@@ -105,12 +104,9 @@ def main():
                     d.close()
 
             if held and not ours():
-                held = False  # user toggled it off (or off then on, making it theirs)
-                vetoed = not os.path.exists(FLAG)
+                held = False  # user toggled it (off: we retake it below while the pad's in use; on: theirs)
             active = time.monotonic() - last < QUIET
-            if not active:
-                vetoed = False
-            if active and not held and not vetoed:
+            if active and not held:
                 held = hold()
             elif not active and held:
                 release()
