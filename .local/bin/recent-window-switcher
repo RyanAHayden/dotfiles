@@ -1,0 +1,67 @@
+#!/usr/bin/python3
+"""Freeze the MRU order for one held-Alt session; commit on Alt release."""
+import fcntl
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import time
+
+def query(command):
+    return json.loads(subprocess.check_output(['hyprctl','-j',command],text=True))
+
+def select(state, windows, active, backwards=False):
+    valid={w['address']:w for w in windows if w.get('mapped') and w.get('focusHistoryID',-1)>=0 and w.get('workspace',{}).get('id',-1)>0}
+    if not state or active.get('address') not in (state.get('last'),state.get('origin')):
+        order=[w['address'] for w in sorted(valid.values(),key=lambda w:w['focusHistoryID'])]
+        start=order.index(active['address']) if active.get('address') in order else 0
+        state={'order':order,'index':start,'origin':active.get('address')}
+    order=state['order']
+    if not order:return state,None
+    for _ in order:
+        state['index']=(state['index']+(-1 if backwards else 1))%len(order)
+        address=order[state['index']]
+        if address in valid:
+            state['last']=address
+            return state,address
+    return state,None
+
+def focus(address):
+    if not address or not address.startswith('0x') or not all(c in '0123456789abcdefABCDEF' for c in address[2:]):return
+    subprocess.run(['hyprctl','eval','hl.dispatch(hl.dsp.focus({window="address:'+address+'"})); hl.dispatch(hl.dsp.window.alter_zorder({window="address:'+address+'",mode="top"}))'],check=True,stdout=subprocess.DEVNULL)
+    for _ in range(15):
+        if query('activewindow').get('address')==address:break
+        time.sleep(.01)
+
+def main():
+    runtime=Path(os.environ.get('XDG_RUNTIME_DIR','/tmp'))
+    path=runtime/'recent-window-switcher.json'
+    def write(state):
+        temp=path.with_suffix('.tmp')
+        temp.write_text(json.dumps(state));temp.replace(path)
+    with (runtime/('recent-window-switcher-'+str(os.getuid())+'.lock')).open('w') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX)
+        try:state=json.loads(path.read_text())
+        except (FileNotFoundError,ValueError):state=None
+        if state and not state.get('opened'):state=None
+        action=sys.argv[1] if len(sys.argv)>1 else 'next'
+        if action.startswith('choose:'):
+            focus(action.split(':',1)[1]);write({'opened':False,'windows':[],'index':0});return
+        if action in ('release','cancel'):
+            if state and action=='release':focus(state.get('last'))
+            write({'opened':False,'windows':[],'index':0})
+            return
+        config=Path.home()/'.config/quickshell/recent-windows'
+        subprocess.run(['quickshell','-n','-d','-p',str(config)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,check=True)
+        clients=query('clients')
+        state,address=select(state,clients,query('activewindow'),action=='back')
+        if address:
+            monitor=next((m['name'] for m in query('monitors') if m.get('focused')),None)
+            lookup={w['address']:w for w in clients}
+            # Keep snapshot indices stable if a window closes during selection.
+            state['windows']=[{'address':a,'title':lookup.get(a,{}).get('title','Closed window'),'class':lookup.get(a,{}).get('class','Window')} for a in state['order']]
+            state['opened']=True;state['monitorName']=monitor
+            write(state)
+
+if __name__=='__main__':main()
