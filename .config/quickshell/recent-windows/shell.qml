@@ -87,7 +87,12 @@ ShellRoot {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: {
+                            acceptedButtons: Qt.LeftButton | Qt.MiddleButton
+                            onClicked: event => {
+                                if (event.button === Qt.MiddleButton) {
+                                    Quickshell.execDetached([Quickshell.env("HOME") + "/.local/bin/recent-window-switcher", "close:" + card.modelData.address])
+                                    return
+                                }
                                 // Hide now instead of waiting for the script's state write.
                                 root.state = ({opened: false, windows: [], index: 0})
                                 Quickshell.execDetached([Quickshell.env("HOME") + "/.local/bin/recent-window-switcher", "choose:" + card.modelData.address])
@@ -135,7 +140,7 @@ ShellRoot {
             }
             Text {
                 anchors { bottom: parent.bottom; bottomMargin: 13; horizontalCenter: parent.horizontalCenter }
-                text: "Hold Alt · Tab to choose · Release Alt to switch"
+                text: "Hold Alt · Tab to choose · Middle-click to close · Release Alt to switch"
                 color: "#bac1d1"
                 font.pixelSize: 12
             }
