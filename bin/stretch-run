@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Steam launch options: /home/ryha/bin/stretch-run mangohud %command%
+# Stretched res while the game runs; restored on exit or crash. If it was already on, it stays on.
+FLAG_FILE="$HOME/.local/state/omarchy/toggles/hypr/stretch-res.lua"
+if [ ! -f "$FLAG_FILE" ]; then
+	~/bin/toggle-stretch-res.sh on
+	trap '~/bin/toggle-stretch-res.sh off' EXIT
+fi
+"$@"
