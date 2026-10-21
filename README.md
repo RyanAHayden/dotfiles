@@ -7,10 +7,20 @@ Use at your own risk
 
 `omarchy pkg add bluetui wiremix`
 
-## Enable autostart for wayvnc
+## Remote desktop: Sunshine (connect with Moonlight)
 
-`systemctl --user enable --now wayvnc`  
-`loginctl enable-linger $USER`
+`omarchy install service sunshine` - installs it, opens ports for LAN + Tailscale,
+adds the "Sunshine Admin" web app. If it dies at "Refusing to operate on linked
+unit file", finish with `systemctl --user enable --now app-dev.lizardbyte.app.Sunshine.service`
+then re-run the ufw/webapp steps from `$(which omarchy-install-service-sunshine)`.
+Don't keep its `o.launch_on_start("sunshine")` line - the systemd unit already starts it.
+Add `capture = kms` to `~/.config/sunshine/sunshine.conf` - otherwise it falls back to the
+screen-share portal and pops an output picker on every start ("Failed to gain CAP_SYS_ADMIN" is harmless).
+
+First run: open Sunshine Admin (https://localhost:47990), set a username/password,
+then pair Moonlight with the PIN it shows. Over Tailscale add the host as `omarchy-desktop`.
+For phone use: in Sunshine Admin > Applications, set an app's prep command to
+`~/bin/zoom 2` (undo: `~/bin/zoom reset`). Super+scroll zooms at the desk.
 
 Theme:
 `https://github.com/RyanAHayden/ryha-omarchy-theme`
