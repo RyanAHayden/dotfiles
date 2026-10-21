@@ -45,4 +45,9 @@ sudo bash -c "
 echo "==> passwordless reboot-to-windows (efibootmgr --bootnext 0001)"
 sudo install -m 440 -o root -g root "$DOTFILES/etc/sudoers.d/reboot-to-windows" /etc/sudoers.d/reboot-to-windows
 
+echo "==> xpadneo (BT Xbox-mode driver) + GuliKit rumble block (firmware crashes on rumble)"
+yay -S --needed xpadneo-dkms
+sudo install -Dm644 "$DOTFILES/etc/modprobe.d/xpadneo.conf" /etc/modprobe.d/xpadneo.conf
+sudo install -Dm644 "$DOTFILES/etc/udev/rules.d/99-gulikit-no-ff.rules" /etc/udev/rules.d/99-gulikit-no-ff.rules
+
 echo "Done - check git changes since we adopted your default files"

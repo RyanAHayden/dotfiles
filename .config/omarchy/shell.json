@@ -10,16 +10,6 @@
           "id": "omarchy.weather"
         },
         {
-          "id": "omarchy.indicators",
-          "items": [
-            "Dnd",
-            "Reminder",
-            "NightLight",
-            "StayAwake",
-            "Dictation"
-          ]
-        },
-        {
           "id": "focus-lock",
           "type": "command",
           "exec": "~/bin/bar-status.sh focus",
@@ -40,6 +30,22 @@
           "exec": "~/bin/bar-status.sh pin",
           "interval": 2,
           "onClick": "~/bin/pin-monitors-toggle"
+        },
+        {
+          "id": "gamepad-awake",
+          "type": "command",
+          "exec": "~/bin/bar-status.sh awake",
+          "interval": 2
+        },
+        {
+          "id": "omarchy.indicators",
+          "items": [
+            "Dnd",
+            "Reminder",
+            "NightLight",
+            "StayAwake",
+            "Dictation"
+          ]
         }
       ],
       "left": [
@@ -53,6 +59,12 @@
       "right": [
         {
           "id": "omarchy.tray"
+        },
+        {
+          "id": "pad-battery",
+          "type": "command",
+          "exec": "~/bin/bar-status.sh pads",
+          "interval": 5
         },
         {
           "id": "hamsti.vitals"
@@ -89,7 +101,7 @@
       ]
     },
     "position": "top",
-    "transparent": false
+    "transparent": true
   },
   "idle": {
     "lock": 300,
