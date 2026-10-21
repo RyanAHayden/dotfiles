@@ -53,4 +53,33 @@ gamescope -w 1440 -h 1080 -W 1920 -H 1080 -S stretch -f -r 480 --backend sdl --f
 - Run `sudo setcap 'CAP_SYS_NICE=eip' $(which gamescope)` (setup.sh does it). Without it gamescope
   logs "No CAP_SYS_NICE ... Performance will be affected" and fps drops. A gamescope update wipes it, so re-run.
 - Nested gamescope still costs some fps. If that's too much, play native 1920x1080 with the in-game upscaler.
-  The monitor can't do 1440x1080, so gamescope is the only way to stretch.
+  The monitor has no 1440x1080 EDID mode, but a custom mode works: see the stretched-res toggle below.
+
+### Stretched res without gamescope (preferred)
+
+Gamescope 3.16.31 kept aborting in The Finals ("CS has been rejected" -> VkResult -4, device lost).
+Instead, `SUPER + CTRL + ALT + S` (`~/bin/toggle-stretch-res.sh`) switches DP-1 to a custom
+1440x1080@480 mode and the monitor stretches it. Toggle again to go back. It survives `hyprctl reload`.
+Set the game to 1440x1080 fullscreen. Launch options: `mangohud %command%`. Cap: see below.
+
+### FPS cap (RTSS equivalent)
+
+`~/bin/fps-cap.sh` writes `~/.config/MangoHud/MangoHud.conf` (edit the script, not the conf) and reloads running
+games live over MangoHud's control socket. Applies to games launched with `mangohud %command%`. Overlay hidden by default; Shift+F6 (also a Hyprland bind) shows/hides it and the choice survives cap changes.
+Needs `omarchy pkg add mangohud`.
+
+| Key | Cap |
+|---|---|
+| Shift+F1 | 165 / 185 |
+| Shift+F2 | 200 / 225 |
+| Shift+F3 | 300 / 340 |
+| Shift+F4 | 400 / 480 |
+| Shift+F5 | uncapped |
+
+Each key flips between its two values. MangoHud's own Shift+F1/F2/F4/F12 shortcuts are moved off those keys
+because it polls keys directly and would fire alongside the Hyprland binds.
+
+- Uses `late` (waits before the game reads input, so no stale frames / lowest latency). `early` gives flatter
+  frametimes but input up to 1 frame older (~4.4ms at 225). Change `fps_limit_method` in `bin/fps-cap.sh`.
+- Cap below where the GPU hits ~95%. A GPU-bound game queues frames: latency spikes and pacing goes uneven with any limiter.
+- No-install option: `DXVK_FRAME_RATE=225` (DX9-11) / `VKD3D_FRAME_RATE=225` (DX12) before `%command%`.
