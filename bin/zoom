@@ -1,0 +1,12 @@
+#!/bin/bash
+# Screen zoom that follows the cursor. Usage: zoom in|out|reset|<factor>
+cur=$(hyprctl getoption cursor:zoom_factor | awk 'NR==1{print $2}')
+
+case "$1" in
+  in) new=$(awk -v c="$cur" 'BEGIN{print c + 0.5}') ;;
+  out) new=$(awk -v c="$cur" 'BEGIN{n = c - 0.5; print (n < 1 ? 1 : n)}') ;;
+  reset) new=1 ;;
+  *) new="$1" ;;
+esac
+
+hyprctl eval "hl.config({ cursor = { zoom_factor = $new } })" >/dev/null
