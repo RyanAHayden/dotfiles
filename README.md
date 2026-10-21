@@ -38,3 +38,19 @@ still asks for a password instead of autologging in.
 
 Discord Theme (Vencord):
 `https://raw.githubusercontent.com/refact0r/system24/refs/heads/main/theme/flavors/system24-auto.theme.css`
+
+## Stretched res in games (gamescope)
+
+Steam > game > Properties > Launch Options:
+
+```
+gamescope -w 1440 -h 1080 -W 1920 -H 1080 -S stretch -f -r 480 --backend sdl --force-grab-cursor -- %command%
+```
+
+- `--backend sdl`: gamescope 3.16's default wayland backend never maps a window under Hyprland (game runs, nothing shows).
+- `--force-grab-cursor`: otherwise the mouse isn't captured.
+- `-r 480`: match the monitor refresh or gamescope caps lower.
+- Run `sudo setcap 'CAP_SYS_NICE=eip' $(which gamescope)` (setup.sh does it). Without it gamescope
+  logs "No CAP_SYS_NICE ... Performance will be affected" and fps drops. A gamescope update wipes it, so re-run.
+- Nested gamescope still costs some fps. If that's too much, play native 1920x1080 with the in-game upscaler.
+  The monitor can't do 1440x1080, so gamescope is the only way to stretch.
