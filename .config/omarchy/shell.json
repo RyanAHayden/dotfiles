@@ -58,13 +58,13 @@
       ],
       "right": [
         {
-          "id": "omarchy.tray"
-        },
-        {
           "id": "pad-battery",
           "type": "command",
           "exec": "~/bin/bar-status.sh pads",
           "interval": 5
+        },
+        {
+          "id": "omarchy.tray"
         },
         {
           "id": "hamsti.vitals"
