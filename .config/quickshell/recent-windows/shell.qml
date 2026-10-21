@@ -11,6 +11,10 @@ ShellRoot {
     property var windows: state.windows || []
     property int selected: state.index || 0
     property bool opened: state.opened === true && windows.length > 0
+    // Quick Alt+Tab taps switch without flashing the overlay.
+    property bool shown: false
+    onOpenedChanged: { shown = false; if (opened) showDelay.restart(); else showDelay.stop() }
+    Timer { id: showDelay; interval: 150; onTriggered: root.shown = true }
     function readState() {
         try { root.state = JSON.parse(data.text()) }
         catch (e) { root.state = ({opened: false, windows: [], index: 0}) }
@@ -39,7 +43,7 @@ ShellRoot {
     }
     PanelWindow {
         id: panel
-        visible: root.opened
+        visible: root.shown
         screen: Quickshell.screens.find(s => s.name === root.state.monitorName) || Quickshell.screens[0]
         anchors { top: true; bottom: true; left: true; right: true }
         color: "transparent"
