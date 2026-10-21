@@ -13,6 +13,10 @@ hl.unbind("SUPER + J")
 hl.unbind("SUPER + K")
 hl.unbind("SUPER + L")
 
+-- Force kill active window (SIGKILL, works on frozen apps)
+hl.unbind("SUPER + SHIFT + W") -- was: Omawrite
+o.bind("SUPER + SHIFT + W", "Force kill window", hl.dsp.window.kill())
+
 -- Unused (desktop, no laptop display/touchpad hardware)
 hl.unbind("SUPER + CTRL + Delete")
 hl.unbind("SUPER + CTRL + ALT + Delete")
@@ -122,6 +126,15 @@ o.bind("SUPER + CTRL + M", "Toggle monitor mirror", "~/bin/toggle-monitor-mirror
 -- Turn the TV output off/on without unplugging (also right-click the bar's TV icon)
 hl.unbind("SUPER + CTRL + O") -- was: Omarchy toggle menu
 o.bind("SUPER + CTRL + O", "Toggle TV output", "~/bin/toggle-tv-power.sh")
+-- Stretched 1440x1080 on DP-1 for games (replaces gamescope, which kept losing the GPU)
+o.bind("SUPER + CTRL + ALT + S", "Toggle stretched res", "~/bin/toggle-stretch-res.sh")
+-- MangoHud frame cap, live in-game (each key flips between its two values)
+o.bind("SHIFT + F1", "Frame cap 165/185", "~/bin/fps-cap.sh 165 185")
+o.bind("SHIFT + F2", "Frame cap 200/225", "~/bin/fps-cap.sh 200 225")
+o.bind("SHIFT + F3", "Frame cap 300/340", "~/bin/fps-cap.sh 300 340")
+o.bind("SHIFT + F4", "Frame cap 400/480", "~/bin/fps-cap.sh 400 480")
+o.bind("SHIFT + F5", "Frame cap off", "~/bin/fps-cap.sh 0")
+o.bind("SHIFT + F6", "Toggle MangoHud overlay", "~/bin/fps-cap.sh hud")
 
 -- Focus lock: new windows open without stealing focus
 hl.unbind("SUPER + SHIFT + O") -- was: Obsidian
