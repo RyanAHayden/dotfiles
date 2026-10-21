@@ -51,13 +51,13 @@ o.bind("SUPER + SHIFT + ALT + B", "Browser (private)", "omarchy-launch-browser -
 -- o.bind("SUPER + SHIFT + M", "Music", "spotifast")
 
 hl.unbind("SUPER + SHIFT + C") -- was: Calendar
-o.bind("SUPER + SHIFT + C", "Discord (scratchpad)", "~/bin/scratch-app discord discord discord")
+o.bind("SUPER + SHIFT + C", "Discord (scratchpad)", "~/bin/scratch-app discord discord")
 
 hl.unbind("SUPER + SHIFT + G") -- was: Signal
 o.bind("SUPER + SHIFT + G", "Steam", "omarchy-launch-or-focus steam")
 
 hl.unbind("SUPER + SHIFT + SLASH") -- was: 1Password
-o.bind("SUPER + SHIFT + SLASH", "Passwords (scratchpad)", "~/bin/scratch-app keepass org.keepassxc.KeePassXC keepassxc")
+o.bind("SUPER + SHIFT + SLASH", "Passwords (scratchpad)", "~/bin/scratch-app org.keepassxc.KeePassXC keepassxc")
 
 hl.unbind("SUPER + SHIFT + S") -- was: Google Maps
 o.bind("SUPER + SHIFT + S", "Audio", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix")
