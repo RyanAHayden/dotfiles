@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Toggle an app's scratchpad (special:<name>); launch it there if no window exists.
+# Usage: scratch-app <name> <class> <launch cmd...>
+name=$1 class=$2; shift 2
+if ! hyprctl clients -j | jq -e --arg c "$class" 'any(.[]; .class == $c)' >/dev/null; then
+	uwsm-app -- "$@" &
+fi
+hyprctl dispatch "hl.dsp.workspace.toggle_special(\"$name\")" >/dev/null
