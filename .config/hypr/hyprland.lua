@@ -68,6 +68,11 @@ o.window({ tag = "drpopup" }, {
 -- window still covers a *tiled* focused window; float yours to keep it on top.
 o.window({ class = "^pcsx2-qt$" }, { workspace = "1 silent", no_initial_focus = true })
 o.window({ title = "^Hot Shots Tennis \\(shot\\)$" }, { workspace = "1 silent", no_initial_focus = true })
+
+-- Scratchpad apps (toggled by ~/bin/scratch-app from bindings.lua)
+o.window({ class = "^discord$" }, { workspace = "special:discord silent" })
+o.window({ class = "^org\\.keepassxc\\.KeePassXC$" }, { workspace = "special:keepass silent" })
+
 hl.on("window.open", function(w)
 	if w.class == "pcsx2-qt" or w.title == "Hot Shots Tennis (shot)" then
 		hl.dispatch(hl.dsp.window.alter_zorder({ mode = "bottom", window = "address:" .. w.address }))
