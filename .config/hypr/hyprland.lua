@@ -70,8 +70,8 @@ o.window({ class = "^pcsx2-qt$" }, { workspace = "1 silent", no_initial_focus = 
 o.window({ title = "^Hot Shots Tennis \\(shot\\)$" }, { workspace = "1 silent", no_initial_focus = true })
 
 -- Scratchpad apps (toggled by ~/bin/scratch-app from bindings.lua)
-o.window({ class = "^discord$" }, { workspace = "special:discord silent" })
-o.window({ class = "^org\\.keepassxc\\.KeePassXC$" }, { workspace = "special:keepass silent" })
+o.window({ class = "^discord$" }, { workspace = "special:scratchpad silent" })
+o.window({ class = "^org\\.keepassxc\\.KeePassXC$" }, { workspace = "special:scratchpad silent" })
 
 hl.on("window.open", function(w)
 	if w.class == "pcsx2-qt" or w.title == "Hot Shots Tennis (shot)" then
