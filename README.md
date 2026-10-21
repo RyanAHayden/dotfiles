@@ -60,7 +60,10 @@ gamescope -w 1440 -h 1080 -W 1920 -H 1080 -S stretch -f -r 480 --backend sdl --f
 Gamescope 3.16.31 kept aborting in The Finals ("CS has been rejected" -> VkResult -4, device lost).
 Instead, `SUPER + CTRL + ALT + S` (`~/bin/toggle-stretch-res.sh`) switches DP-1 to a custom
 1440x1080@480 mode and the monitor stretches it. Toggle again to go back. It survives `hyprctl reload`.
-Set the game to 1440x1080 fullscreen. Launch options: `mangohud %command%`. Cap: see below.
+Set the game to 1440x1080 fullscreen. Or let the launch do it: `/home/ryha/bin/stretch-run mangohud %command%`
+(stretched while the game runs, restored on exit/crash). Cap: see below.
+The LG must be in 1080p@480 dual mode first. That can't be automated: DDC VCP `F8` reads the mode
+(00 = 4K@240, 01 = 1080p@480) but the monitor rejects writes to it.
 
 ### FPS cap (RTSS equivalent)
 
