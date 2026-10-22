@@ -14,7 +14,7 @@ ShellRoot {
     // Quick Alt+Tab taps switch without flashing the overlay.
     property bool shown: false
     onOpenedChanged: { shown = false; if (opened) showDelay.restart(); else showDelay.stop() }
-    Timer { id: showDelay; interval: 200; onTriggered: root.shown = true }
+    Timer { id: showDelay; interval: 100; onTriggered: root.shown = true }
     function readState() {
         try { root.state = JSON.parse(data.text()) }
         catch (e) { root.state = ({opened: false, windows: [], index: 0}) }
