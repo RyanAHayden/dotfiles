@@ -48,7 +48,7 @@ o.bind("SUPER + SHIFT + B", "Browser", "omarchy-launch-browser")
 
 hl.unbind("SUPER + SHIFT + ALT + B") -- was: Browser (private)
 o.bind("SUPER + SHIFT + ALT + B", "Browser (private)", "omarchy-launch-browser --private")
--- o.bind("SUPER + SHIFT + M", "Music", "spotifast")
+o.bind("SUPER + SHIFT + M", "Spotify (scratchpad)", "~/bin/scratch-app Spotify spotify")
 
 hl.unbind("SUPER + SHIFT + C") -- was: Calendar
 o.bind("SUPER + SHIFT + C", "Discord (scratchpad)", "~/bin/scratch-app discord discord")
@@ -150,6 +150,8 @@ o.bind("SUPER + SHIFT + mouse_down", "Window volume down", "~/bin/window-volume.
 o.bind("SUPER + SHIFT + mouse:273", "Toggle window mute", "~/bin/window-volume.sh mute")
 
 -- SUPER + scroll zooms the screen around the cursor instead of switching workspaces
+hl.unbind("SUPER + CTRL + Z")
+hl.unbind("SUPER + CTRL + ALT + Z")
 hl.unbind("SUPER + mouse_down") -- was: Scroll active workspace forward
 hl.unbind("SUPER + mouse_up") -- was: Scroll active workspace backward
 o.bind("SUPER + mouse_up", "Zoom in", "~/bin/zoom in")
@@ -173,5 +175,15 @@ hl.unbind("ALT + TAB")
 hl.unbind("ALT + SHIFT + TAB")
 o.bind("ALT + TAB", "Switch to recent window", "$HOME/.local/bin/recent-window-switcher next")
 o.bind("ALT + SHIFT + TAB", "Switch backward through recent windows", "$HOME/.local/bin/recent-window-switcher back")
-o.bind("ALT + ALT_L", nil, "$HOME/.local/bin/recent-window-switcher release", { release = true, ignore_mods = true, non_consuming = true, transparent = true })
-o.bind("ALT + ALT_R", nil, "$HOME/.local/bin/recent-window-switcher release", { release = true, ignore_mods = true, non_consuming = true, transparent = true })
+o.bind(
+	"ALT + ALT_L",
+	nil,
+	"$HOME/.local/bin/recent-window-switcher release",
+	{ release = true, ignore_mods = true, non_consuming = true, transparent = true }
+)
+o.bind(
+	"ALT + ALT_R",
+	nil,
+	"$HOME/.local/bin/recent-window-switcher release",
+	{ release = true, ignore_mods = true, non_consuming = true, transparent = true }
+)
