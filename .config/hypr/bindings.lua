@@ -169,20 +169,20 @@ o.bind("SUPER + CTRL + ALT + O", "Toggle monitor pin (dual-mode switch)", "~/bin
 -- Toggle labels (title · program · pid) over every visible window (local.window-labels shell plugin)
 o.bind("SUPER + ALT + W", "Toggle window labels", "omarchy-shell windowlabels toggle")
 
--- Recent-window Alt+Tab with live previews (from github.com/ilsmith0421/dotfiles).
--- Freezes MRU order while Alt is held; commits on Alt release.
-hl.unbind("ALT + TAB")
-hl.unbind("ALT + SHIFT + TAB")
-o.bind("ALT + TAB", "Switch to recent window", "$HOME/.local/bin/recent-window-switcher next")
-o.bind("ALT + SHIFT + TAB", "Switch backward through recent windows", "$HOME/.local/bin/recent-window-switcher back")
+-- Recent-window Super+Tab with live previews (from github.com/ilsmith0421/dotfiles).
+-- Freezes MRU order while Super is held; commits on Super release.
+hl.unbind("SUPER + TAB")
+hl.unbind("SUPER + SHIFT + TAB")
+o.bind("SUPER + TAB", "Switch to recent window", "$HOME/.local/bin/recent-window-switcher next")
+o.bind("SUPER + SHIFT + TAB", "Switch backward through recent windows", "$HOME/.local/bin/recent-window-switcher back")
 o.bind(
-	"ALT + ALT_L",
+	"SUPER + SUPER_L",
 	nil,
 	"$HOME/.local/bin/recent-window-switcher release",
 	{ release = true, ignore_mods = true, non_consuming = true, transparent = true }
 )
 o.bind(
-	"ALT + ALT_R",
+	"SUPER + SUPER_R",
 	nil,
 	"$HOME/.local/bin/recent-window-switcher release",
 	{ release = true, ignore_mods = true, non_consuming = true, transparent = true }

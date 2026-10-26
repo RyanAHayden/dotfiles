@@ -62,6 +62,8 @@ Instead, `SUPER + CTRL + ALT + S` (`~/bin/toggle-stretch-res.sh`) switches DP-1 
 1440x1080@480 mode and the monitor stretches it. Toggle again to go back. It survives `hyprctl reload`.
 Set the game to 1440x1080 fullscreen. Or let the launch do it: `/home/ryha/bin/stretch-run mangohud %command%`
 (stretched while the game runs, restored on exit/crash). Cap: see below.
+Add `PROTON_USE_XALIA=0` in front to turn off Xalia, Proton's controller helper for launchers (The Finals doesn't need it, and it uses ~4% CPU):
+`PROTON_USE_XALIA=0 /home/ryha/bin/stretch-run mangohud %command%`. Check with `pgrep xalia` (should print nothing).
 The LG must be in 1080p@480 dual mode first. That can't be automated: DDC VCP `F8` reads the mode
 (00 = 4K@240, 01 = 1080p@480) but the monitor rejects writes to it.
 
