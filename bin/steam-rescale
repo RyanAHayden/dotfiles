@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# steam-rescale SCALE: keep Steam's UI the same size as the rest of the desktop across the LG dual
+# modes (4K scale 1.6 / 1080p scale 1). Called by monitors.lua's dual-mode hook on every DP-1 change.
+# Steam only reads its UI scale at startup, so a running Steam is restarted, unless a game is running.
+s=$1
+systemctl --user set-environment STEAM_FORCE_DESKTOPUI_SCALING="$s"
+pid=$(pgrep -x steam | head -1)
+[ -n "$pid" ] || exit 0
+cur=$(tr '\0' '\n' <"/proc/$pid/environ" | sed -n 's/^STEAM_FORCE_DESKTOPUI_SCALING=//p')
+[ "$cur" = "$s" ] && exit 0
+if pgrep -f 'SteamLaunch AppId=' >/dev/null; then
+	omarchy-notification-send -u low "Steam UI scale not updated" "A game is running; restart Steam after it closes"
+	exit 0
+fi
+# Come back the way it was: in the tray if no Steam window was open
+hyprctl clients -j | jq -e 'any(.class == "steam")' >/dev/null && silent= || silent=-silent
+steam -shutdown >/dev/null 2>&1
+for _ in $(seq 40); do kill -0 "$pid" 2>/dev/null || break; sleep 0.5; done
+STEAM_FORCE_DESKTOPUI_SCALING="$s" setsid -f uwsm-app -- steam $silent >/dev/null 2>&1
