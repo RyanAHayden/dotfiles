@@ -49,17 +49,27 @@ def focus(address):
         if query('activewindow').get('address')==address:break
         time.sleep(.01)
 
+# Omarchy's Super+click drag/resize grabs clicks before the overlay sees them,
+# so drop those binds while the switcher is open.
+MOUSE_BINDS={'SUPER + mouse:272':('drag','Move window'),'SUPER + mouse:273':('resize','Resize window')}
+
+def mouse_binds(on):
+    lua=' '.join(f'hl.bind("{k}", hl.dsp.window.{d}(), {{ mouse = true, description = "{desc}" }})' if on else f'hl.unbind("{k}")' for k,(d,desc) in MOUSE_BINDS.items())
+    subprocess.run(['hyprctl','eval',lua],stdout=subprocess.DEVNULL)
+
 def main():
     runtime=Path(os.environ.get('XDG_RUNTIME_DIR','/tmp'))
     path=runtime/'recent-window-switcher.json'
-    def write(state):
+    def write(new):
+        if was_open!=bool(new.get('opened')):mouse_binds(not new.get('opened'))
         temp=path.with_suffix('.tmp')
-        temp.write_text(json.dumps(state));temp.replace(path)
+        temp.write_text(json.dumps(new));temp.replace(path)
     with (runtime/('recent-window-switcher-'+str(os.getuid())+'.lock')).open('w') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
         try:state=json.loads(path.read_text())
         except (FileNotFoundError,ValueError):state=None
         if state and not state.get('opened'):state=None
+        was_open=bool(state)
         action=sys.argv[1] if len(sys.argv)>1 else 'next'
         if action.startswith('choose:'):
             focus(action.split(':',1)[1]);write({'opened':False,'windows':[],'index':0});return
