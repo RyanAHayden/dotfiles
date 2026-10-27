@@ -52,12 +52,12 @@ if [ "$1" = hud ]; then
 		c=$(sed -n 's/^fps_limit=//p' "$f" 2>/dev/null)
 		write "$f" "${c:-225}"
 	done
-	mangohudctl reload-cfg 2>/dev/null
+	mangohudctl set reload_config 1 2>/dev/null # "reload-cfg" (in its usage text) fails on 0.8.4
 	exit
 fi
 
 write "$CONF" "$new"
-mangohudctl reload-cfg 2>/dev/null
+mangohudctl set reload_config 1 2>/dev/null # "reload-cfg" (in its usage text) fails on 0.8.4
 [ "$new" = 0 ] && label="uncapped" || label="$new fps"
 [ "$CONF" = "$DIR/MangoHud.conf" ] && game="default" || game=$(basename "$CONF" .conf)
 omarchy-notification-send -u low "Frame cap: $label" "$game"
