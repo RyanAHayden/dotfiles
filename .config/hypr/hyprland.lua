@@ -65,11 +65,10 @@ o.window({ tag = "drpopup" }, {
 })
 
 -- open-tennis test windows (the remaster's --shot runs are titled "Hot Shots Tennis (shot)";
--- a normal launch is plain "Hot Shots Tennis" and opens normally; PCSX2 is class pcsx2-qt) open on workspace 1
+-- a normal launch is plain "Hot Shots Tennis" and opens normally) open on workspace 1
 -- without taking focus, and drop under every other window there as soon as they map.
 -- ponytail: Hyprland draws floating windows above tiled ones, so a floating test
 -- window still covers a *tiled* focused window; float yours to keep it on top.
-o.window({ class = "^pcsx2-qt$" }, { workspace = "1 silent", no_initial_focus = true })
 o.window({ title = "^Hot Shots Tennis \\(shot\\)$" }, { workspace = "1 silent", no_initial_focus = true })
 
 -- Scratchpad apps (toggled by ~/bin/scratch-app from bindings.lua)
@@ -82,7 +81,7 @@ hl.on("window.active", function(w)
 end)
 
 hl.on("window.open", function(w)
-	if w.class == "pcsx2-qt" or w.title == "Hot Shots Tennis (shot)" then
+	if w.title == "Hot Shots Tennis (shot)" then
 		hl.dispatch(hl.dsp.window.alter_zorder({ mode = "bottom", window = "address:" .. w.address }))
 	end
 end)
