@@ -3,6 +3,8 @@
 # modes (4K scale 1.6 / 1080p scale 1). Called by monitors.lua's dual-mode hook on every DP-1 change.
 # Steam only reads its UI scale at startup, so a running Steam is restarted, unless a game is running.
 s=$1
+exec 9>"${XDG_RUNTIME_DIR:-/tmp}/steam-rescale.lock"
+flock -w 60 9 || exit 1 # one at a time: overlapping restarts left a Steam that wouldn't open
 systemctl --user set-environment STEAM_FORCE_DESKTOPUI_SCALING="$s"
 pid=$(pgrep -x steam | head -1)
 [ -n "$pid" ] || exit 0
@@ -16,4 +18,10 @@ fi
 hyprctl clients -j | jq -e 'any(.class == "steam")' >/dev/null && silent= || silent=-silent
 steam -shutdown >/dev/null 2>&1
 for _ in $(seq 40); do kill -0 "$pid" 2>/dev/null || break; sleep 0.5; done
+# -shutdown is sometimes ignored; a launch while the old one lives just hands off to it and opens nothing
+kill -0 "$pid" 2>/dev/null && kill "$pid" && for _ in $(seq 20); do kill -0 "$pid" 2>/dev/null || break; sleep 0.5; done
+if kill -0 "$pid" 2>/dev/null; then
+	omarchy-notification-send -u critical "Steam didn't close" "Couldn't restart it at the new UI scale"
+	exit 1
+fi
 STEAM_FORCE_DESKTOPUI_SCALING="$s" setsid -f uwsm-app -- steam $silent >/dev/null 2>&1
