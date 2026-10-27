@@ -46,7 +46,10 @@ hl.on("monitor.added", function()
   -- them once the new layout has settled
   hl.timer(function()
     for _, w in ipairs(hl.get_windows({ floating = true })) do
-      hl.dispatch(hl.dsp.window.center({ window = "address:" .. w.address }))
+      -- center() aborts Hyprland on a window with no monitor/workspace (mid-switch, unmapped, hidden)
+      if w.mapped and not w.hidden and w.monitor and w.workspace and w.monitor.width > 0 then
+        hl.dispatch(hl.dsp.window.center({ window = "address:" .. w.address }))
+      end
     end
   end, { timeout = 500, type = "oneshot" })
 end)
