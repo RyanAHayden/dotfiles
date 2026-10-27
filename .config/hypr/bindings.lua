@@ -54,7 +54,7 @@ hl.unbind("SUPER + SHIFT + C") -- was: Calendar
 o.bind("SUPER + SHIFT + C", "Discord (scratchpad)", "~/bin/scratch-app discord discord")
 
 hl.unbind("SUPER + SHIFT + G") -- was: Signal
-o.bind("SUPER + SHIFT + G", "Steam", "omarchy-launch-or-focus steam")
+o.bind("SUPER + SHIFT + G", "Steam", "omarchy-launch-or-focus steam 'uwsm-app -- env GDK_SCALE=1 steam'")
 
 hl.unbind("SUPER + SHIFT + SLASH") -- was: 1Password
 o.bind("SUPER + SHIFT + SLASH", "Passwords (scratchpad)", "~/bin/scratch-app org.keepassxc.KeePassXC keepassxc")
