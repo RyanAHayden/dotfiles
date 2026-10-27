@@ -80,9 +80,9 @@ Needs `omarchy pkg add mangohud`.
 | Shift+F3 | 300 / 340 |
 | Shift+F4 | 400 / 480 |
 | Shift+F5 | uncapped |
-| Shift+F7 | 600 / 720 |
+| Shift+F7 | 500 / 600 / 700 |
 
-Each key flips between its two values. MangoHud's own Shift+F1/F2/F4/F12 shortcuts are moved off those keys
+Each key cycles through its values. MangoHud's own Shift+F1/F2/F4/F12 shortcuts are moved off those keys
 because it polls keys directly and would fire alongside the Hyprland binds.
 
 - Uses `late` (waits before the game reads input, so no stale frames / lowest latency). `early` gives flatter
