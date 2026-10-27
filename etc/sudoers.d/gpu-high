@@ -1,0 +1,1 @@
+%wheel ALL=(root) NOPASSWD: /usr/bin/tee /sys/bus/pci/devices/0000\:03\:00.0/power_dpm_force_performance_level

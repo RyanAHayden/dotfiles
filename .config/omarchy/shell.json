@@ -17,6 +17,13 @@
           "onClick": "~/bin/toggle-focus-lock.sh"
         },
         {
+          "id": "gpu-high",
+          "type": "command",
+          "exec": "~/bin/bar-status.sh gpu",
+          "interval": 2,
+          "onClick": "~/bin/toggle-gpu-high.sh"
+        },
+        {
           "id": "tv-mirror",
           "type": "command",
           "exec": "~/bin/bar-status.sh mirror",

@@ -39,6 +39,13 @@
     "description": "Copy Bluetooth pairing keys from Windows so devices don't need re-pairing",
     "action": "omarchy-launch-floating-terminal-with-presentation 'sudo ~/scripts/btsync-run.sh'"
   },
+  "trigger.toggle.gpu-high": {
+    "icon": "󰢮",
+    "label": "GPU Max Clocks",
+    "description": "Lock the GPU at max clocks instead of auto (resets on reboot)",
+    "checked": "[ \"$(cat /sys/bus/pci/devices/0000:03:00.0/power_dpm_force_performance_level)\" = high ]",
+    "action": "~/bin/toggle-gpu-high.sh"
+  },
   "system.windows": {
     "icon": "",
     "label": "Reboot to Windows",
