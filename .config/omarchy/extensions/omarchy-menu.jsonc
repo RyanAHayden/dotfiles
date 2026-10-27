@@ -52,10 +52,11 @@
     "description": "Reboot once into Windows Boot Manager",
     "action": "~/bin/reboot-to-windows"
   },
-  "system.repin-monitor": {
+  "trigger.toggle.repin-monitor": {
     "icon": "󰍹",
-    "label": "Toggle Monitor Pin",
+    "label": "Monitor Pin",
     "description": "Unpin, switch LG dual mode, then toggle again to re-pin",
+    "checked": "systemctl is-active -q pin-monitors",
     "action": "~/bin/pin-monitors-toggle"
   }
 }
