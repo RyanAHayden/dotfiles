@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# Live MangoHud frame cap. Usage: fps-cap.sh A [B] -> cap A, or B if A is already set. 0 = uncapped.
+# Live MangoHud frame cap. Usage: fps-cap.sh A [B C...] -> cycle A, B, C... from the current cap. 0 = uncapped.
 # fps-cap.sh hud -> show/hide the overlay. Kept in the conf so a cap change doesn't reset it.
 # Writes the whole MangoHud.conf (this script is its source of truth) and reloads running games
 # over MangoHud's control socket. Games need launch options: mangohud %command%
 CONF="$HOME/.config/MangoHud/MangoHud.conf"
 cur=$(sed -n 's/^fps_limit=//p' "$CONF" 2>/dev/null)
 hidden=$(grep -qx no_display "$CONF" 2>/dev/null || [ ! -f "$CONF" ] && echo 1)
+caps=("$@")
 new=$1
-[ -n "$2" ] && [ "$cur" = "$1" ] && new=$2
+for i in "${!caps[@]}"; do [ "${caps[i]}" = "$cur" ] && new=${caps[i+1]:-$1}; done
 if [ "$1" = hud ]; then
 	new=${cur:-225}
 	[ -n "$hidden" ] && hidden= || hidden=1
