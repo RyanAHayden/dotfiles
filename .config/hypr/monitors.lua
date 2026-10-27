@@ -36,13 +36,20 @@ local function lg_dual_mode_scale()
   end
   local scale = clean_scale(math.max(1, tonumber(base) * ratio), m.width, m.height)
   hl.env("GDK_SCALE", tostring(math.floor(scale + 0.5)))
-  hl.env("STEAM_FORCE_DESKTOPUI_SCALING", tostring(scale)) -- exact, GDK_SCALE rounds 1.6 up to 2
-  hl.exec_cmd("~/bin/steam-rescale " .. scale)
   if math.abs(m.scale - scale) > 0.01 then
     hl.monitor({ output = "DP-1", mode = "preferred", position = "auto", scale = scale })
   end
 end
-hl.on("monitor.added", lg_dual_mode_scale)
+hl.on("monitor.added", function()
+  lg_dual_mode_scale()
+  -- The switch changes DP-1's logical size and can strand floating windows off screen: re-center
+  -- them once the new layout has settled
+  hl.timer(function()
+    for _, w in ipairs(hl.get_windows({ floating = true })) do
+      hl.dispatch(hl.dsp.window.center({ window = "address:" .. w.address }))
+    end
+  end, { timeout = 500, type = "oneshot" })
+end)
 lg_dual_mode_scale()
 
 -- NOTE: TV (HDMI-A-1) mode/mirror lines below are overridden. Change MODE in ~/dotfiles/bin/toggle-monitor-mirror.sh
