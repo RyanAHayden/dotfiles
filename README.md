@@ -80,6 +80,7 @@ Needs `omarchy pkg add mangohud`.
 | Shift+F3 | 300 / 340 |
 | Shift+F4 | 400 / 480 |
 | Shift+F5 | uncapped |
+| Shift+F7 | 600 / 720 |
 
 Each key flips between its two values. MangoHud's own Shift+F1/F2/F4/F12 shortcuts are moved off those keys
 because it polls keys directly and would fire alongside the Hyprland binds.
