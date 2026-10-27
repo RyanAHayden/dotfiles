@@ -135,7 +135,7 @@ o.bind("SHIFT + F3", "Frame cap 300/340", "~/bin/fps-cap.sh 300 340")
 o.bind("SHIFT + F4", "Frame cap 400/480", "~/bin/fps-cap.sh 400 480")
 o.bind("SHIFT + F5", "Frame cap off", "~/bin/fps-cap.sh 0")
 o.bind("SHIFT + F6", "Toggle MangoHud overlay", "~/bin/fps-cap.sh hud")
-o.bind("SHIFT + F7", "Frame cap 500/600/700", "~/bin/fps-cap.sh 500 600 700")
+o.bind("SHIFT + F7", "Frame cap 500/525/550/600/700", "~/bin/fps-cap.sh 500 525 550 600 700")
 
 -- Focus lock: new windows open without stealing focus
 hl.unbind("SUPER + SHIFT + O") -- was: Obsidian
