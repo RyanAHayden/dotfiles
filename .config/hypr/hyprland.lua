@@ -76,6 +76,11 @@ o.window({ title = "^Hot Shots Tennis \\(shot\\)$" }, { workspace = "1 silent", 
 o.window({ class = "^discord$" }, { workspace = "special:scratchpad silent" })
 o.window({ class = "^org\\.keepassxc\\.KeePassXC$" }, { workspace = "special:scratchpad silent" })
 
+-- Per-game MangoHud frame cap (bin/fps-cap.sh): apply the focused game's remembered cap
+hl.on("window.active", function(w)
+	if w and w.pid then hl.exec_cmd("~/bin/fps-cap.sh focus " .. w.pid) end
+end)
+
 hl.on("window.open", function(w)
 	if w.class == "pcsx2-qt" or w.title == "Hot Shots Tennis (shot)" then
 		hl.dispatch(hl.dsp.window.alter_zorder({ mode = "bottom", window = "address:" .. w.address }))
