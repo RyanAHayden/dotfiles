@@ -40,9 +40,9 @@ require("default.hypr.toggles")
 -- Override Steam's own minimum window size so it can be resized smaller
 -- than its built-in floor.
 o.window({ class = "steam" }, { min_size = { 100, 100 } })
--- Same Steam UI scale at every launch, whichever LG dual mode it starts in (otherwise it follows
--- GDK_SCALE, 1 or 2 by mode). Size it with Steam's own Settings > Interface/Accessibility scaling.
-hl.env("STEAM_FORCE_DESKTOPUI_SCALING", "1")
+-- Steam's UI scale = GDK_SCALE (1 or 2 by LG dual mode) x its own Settings > Interface scale, and
+-- it ignores STEAM_FORCE_DESKTOPUI_SCALING. So every launcher pins GDK_SCALE=1: the SUPER+SHIFT+G
+-- bind and ~/.local/share/applications/steam.desktop (a copy of the stock one; re-copy if it changes).
 
 -- Let CS2 tear (allow_tearing master toggle is in looknfeel.lua). Only
 -- takes effect when the window is fullscreen and solitary.
