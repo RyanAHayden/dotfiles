@@ -1,0 +1,11 @@
+#!/bin/bash
+# Open an archive as a browsable folder in Dolphin (kio-extras archive worker).
+f=$(realpath "$1")
+case "${f,,}" in
+  *.7z) p=sevenz ;;
+  *.zip|*.jar|*.apk) p=zip ;;
+  *.tar|*.tar.*|*.tgz|*.tbz2|*.txz|*.tzst) p=tar ;;
+  *.ar|*.deb) p=ar ;;
+  *) exec dolphin --select "$f" ;;  # ponytail: rar etc. unsupported by kio, just reveal
+esac
+exec dolphin --new-window "$p:$f/"
