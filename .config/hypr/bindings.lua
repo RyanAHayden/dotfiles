@@ -38,11 +38,10 @@ o.bind("SUPER + ALT + SPACE", "Dictate", "voxtype record toggle")
 hl.unbind("SUPER + SHIFT + RETURN") -- was: Browser
 o.bind("SUPER + SHIFT + RETURN", "Browser (Blank window)", "omarchy-launch-browser --blank-window")
 
-o.bind(
-	"SUPER + ALT + SHIFT + F",
-	"File manager (cwd)",
-	'uwsm-app -- nautilus --new-window "$(omarchy-cmd-terminal-cwd)"'
-)
+hl.unbind("SUPER + SHIFT + F") -- was: nautilus
+o.bind("SUPER + SHIFT + F", "File manager", "uwsm-app -- dolphin --new-window")
+hl.unbind("SUPER + ALT + SHIFT + F") -- was: nautilus
+o.bind("SUPER + ALT + SHIFT + F", "File manager (cwd)", 'uwsm-app -- dolphin --new-window "$(omarchy-cmd-terminal-cwd)"')
 hl.unbind("SUPER + SHIFT + B") -- was: Browser
 o.bind("SUPER + SHIFT + B", "Browser", "omarchy-launch-browser")
 
