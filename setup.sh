@@ -24,6 +24,13 @@ omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
 echo "==> gamescope CAP_SYS_NICE (stretched-res perf, see README)"
 command -v gamescope >/dev/null && sudo setcap 'CAP_SYS_NICE=eip' "$(command -v gamescope)"
 
+echo "==> dolphin as file manager (hypr binds in .config/hypr/bindings.lua)"
+sudo pacman -S --needed dolphin
+xdg-mime default org.kde.dolphin.desktop inode/directory
+# dolphin defaults to konsole for Terminal=true apps (nvim.desktop etc.)
+kwriteconfig6 --file kdeglobals --group General --key TerminalApplication xdg-terminal-exec
+kwriteconfig6 --file kdeglobals --group General --key TerminalService foot.desktop
+
 echo "==> sddm theme (omarchy-red)"
 sudo cp -rT "$DOTFILES/etc/sddm-themes/omarchy-red" /usr/share/sddm/themes/omarchy-red
 sudo cp "$DOTFILES/etc/sddm.conf.d/10-theme.conf" /etc/sddm.conf.d/10-theme.conf
