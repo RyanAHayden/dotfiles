@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Dolphin (browse archive)
+Icon=org.kde.dolphin
+Exec=dolphin-archive %f
+NoDisplay=true
+MimeType=application/x-7z-compressed;application/zip;application/x-tar;application/x-compressed-tar;application/x-bzip2-compressed-tar;application/x-xz-compressed-tar;application/x-zstd-compressed-tar;application/x-archive;application/vnd.debian.binary-package;application/x-rar;application/vnd.rar;

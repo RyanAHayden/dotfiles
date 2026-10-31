@@ -85,3 +85,7 @@ hl.on("window.open", function(w)
 		hl.dispatch(hl.dsp.window.alter_zorder({ mode = "bottom", window = "address:" .. w.address }))
 	end
 end)
+
+-- File pickers via xdg portal (FileChooser=kde in ~/.config/xdg-desktop-portal/hyprland-portals.conf)
+hl.env("GTK_USE_PORTAL", "1")
+hl.env("GDK_DEBUG", "portals")

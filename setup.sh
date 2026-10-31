@@ -30,6 +30,11 @@ xdg-mime default org.kde.dolphin.desktop inode/directory
 # dolphin defaults to konsole for Terminal=true apps (nvim.desktop etc.)
 kwriteconfig6 --file kdeglobals --group General --key TerminalApplication xdg-terminal-exec
 kwriteconfig6 --file kdeglobals --group General --key TerminalService foot.desktop
+# archives open as browsable folders in dolphin (bin/dolphin-archive); KDE file picker via portal
+sudo pacman -S --needed kio-extras xdg-desktop-portal-kde
+for m in $(sed -n 's/^MimeType=//p' "$DOTFILES/.local/share/applications/dolphin-archive.desktop" | tr ';' ' '); do
+  xdg-mime default dolphin-archive.desktop "$m"
+done
 
 echo "==> sddm theme (omarchy-red)"
 sudo cp -rT "$DOTFILES/etc/sddm-themes/omarchy-red" /usr/share/sddm/themes/omarchy-red
