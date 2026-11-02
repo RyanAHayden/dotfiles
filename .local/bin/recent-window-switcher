@@ -75,7 +75,9 @@ def main():
             focus(action.split(':',1)[1]);write({'opened':False,'windows':[],'index':0});return
         if action.startswith('close:'):
             write(close(state,action.split(':',1)[1]) or {'opened':False,'windows':[],'index':0});return
-        if action in ('release','cancel'):
+        if action=='escape' and not state:
+            subprocess.Popen(['omarchy-menu','toggle','system']);return
+        if action in ('release','cancel','escape'):
             if state and action=='release':focus(state.get('last'))
             write({'opened':False,'windows':[],'index':0})
             return
