@@ -108,7 +108,8 @@
       ]
     },
     "position": "top",
-    "transparent": false
+    "transparent": false,
+    "id": "ryha.bar"
   },
   "idle": {
     "lock": 300,
