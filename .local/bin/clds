@@ -163,7 +163,18 @@ cmd_run() {
     ) &
     RUN_KEEPALIVE_PID=$!
 
+    trust_cwd
     claude --dangerously-skip-permissions "$@"
+}
+
+# ponytail: same as cld — no CLI flag skips the workspace trust dialog, so pre-mark
+# $PWD trusted in ~/.claude.json. Ceiling: tiny race with another session's write.
+trust_cwd() {
+    local f=~/.claude.json tmp
+    [[ -f $f ]] || return 0
+    jq -e --arg d "$PWD" '.projects[$d].hasTrustDialogAccepted' "$f" >/dev/null && return 0
+    tmp=$(mktemp "$f.XXXXXX") && jq --arg d "$PWD" '.projects[$d].hasTrustDialogAccepted = true' "$f" >"$tmp" \
+        && chmod --reference="$f" "$tmp" && mv "$tmp" "$f" || rm -f "$tmp"
 }
 
 cmd_indicator() {
