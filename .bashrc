@@ -41,3 +41,7 @@ case ":${PATH}:" in *:"$HOME/.local/bin":*) ;; *) export PATH="$HOME/.local/bin:
 
 # c = claude, bypass permissions (overrides omarchy opencode alias)
 alias c=cld
+
+# t [session] = attach (to named session if given), else new "Work"
+unalias t 2>/dev/null
+t() { tmux attach ${1:+-t "$1"} || tmux new -s "${1:-Work}"; }
