@@ -187,3 +187,6 @@ o.bind(
 	"$HOME/.local/bin/recent-window-switcher release",
 	{ release = true, ignore_mods = true, non_consuming = true, transparent = true }
 )
+-- Super+Escape cancels the switcher while it's open; otherwise opens the system menu.
+hl.unbind("SUPER + ESCAPE")
+o.bind("SUPER + ESCAPE", "System menu / cancel window switcher", "$HOME/.local/bin/recent-window-switcher escape")
