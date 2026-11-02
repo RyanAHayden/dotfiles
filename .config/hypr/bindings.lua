@@ -190,3 +190,23 @@ o.bind(
 -- Super+Escape cancels the switcher while it's open; otherwise opens the system menu.
 hl.unbind("SUPER + ESCAPE")
 o.bind("SUPER + ESCAPE", "System menu / cancel window switcher", "$HOME/.local/bin/recent-window-switcher escape")
+
+-- While the switcher is open (script enters this submap): Super+letter jumps to the
+-- next window whose title or class starts with it. Release/Tab/Escape mirror the global binds.
+hl.define_submap("recent-switcher", function()
+	local sw = "$HOME/.local/bin/recent-window-switcher "
+	o.bind("SUPER + TAB", "Switch to recent window", sw .. "next")
+	o.bind("SUPER + SHIFT + TAB", "Switch backward through recent windows", sw .. "back")
+	o.bind("SUPER + ESCAPE", "Cancel window switcher", sw .. "cancel")
+	for _, key in ipairs({ "SUPER_L", "SUPER_R" }) do
+		o.bind("SUPER + " .. key, nil, sw .. "release", { release = true, ignore_mods = true, non_consuming = true, transparent = true })
+	end
+	-- Super+N picks the window badged N (1-9, 0 = 10th) and switches immediately.
+	for n = 1, 10 do
+		o.bind("SUPER + " .. (n % 10), nil, sw .. "num:" .. n)
+	end
+	for c in ("abcdefghijklmnopqrstuvwxyz"):gmatch(".") do
+		o.bind("SUPER + " .. c:upper(), nil, sw .. "letter:" .. c)
+		o.bind("SUPER + SHIFT + " .. c:upper(), nil, sw .. "letter:" .. c)
+	end
+end)

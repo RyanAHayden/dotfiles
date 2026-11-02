@@ -2,6 +2,7 @@
 """Freeze the MRU order for one held-Alt session; commit on Alt release."""
 import fcntl
 import json
+import re
 import os
 from pathlib import Path
 import subprocess
@@ -55,6 +56,8 @@ MOUSE_BINDS={'SUPER + mouse:272':('drag','Move window'),'SUPER + mouse:273':('re
 
 def mouse_binds(on):
     lua=' '.join(f'hl.bind("{k}", hl.dsp.window.{d}(), {{ mouse = true, description = "{desc}" }})' if on else f'hl.unbind("{k}")' for k,(d,desc) in MOUSE_BINDS.items())
+    # Submap (bindings.lua) routes Super+letter to letter:<x> while the switcher is open.
+    lua+=' hl.dispatch(hl.dsp.submap("'+('reset' if on else 'recent-switcher')+'"))'
     subprocess.run(['hyprctl','eval',lua],stdout=subprocess.DEVNULL)
 
 def main():
@@ -75,6 +78,21 @@ def main():
             focus(action.split(':',1)[1]);write({'opened':False,'windows':[],'index':0});return
         if action.startswith('close:'):
             write(close(state,action.split(':',1)[1]) or {'opened':False,'windows':[],'index':0});return
+        if action.startswith('letter:'):
+            if state:
+                ch=action[7:].lower();n=len(state['order'])
+                # Next window after the current pick whose title or class starts with ch.
+                for step in range(1,n+1):
+                    i=(state['index']+step)%n;w=state['windows'][i]
+                    # Skip leading icons/emoji/punctuation in titles before matching.
+                    if any(re.sub(r'^[\W_]+','',(w.get(k) or '').lower()).startswith(ch) for k in ('title','class')):
+                        state['index']=i;state['last']=state['order'][i];write(state);break
+            return
+        if action.startswith('num:'):
+            i=int(action[4:])-1
+            if state and 0<=i<len(state['order']):
+                focus(state['order'][i]);write({'opened':False,'windows':[],'index':0})
+            return
         if action=='escape' and not state:
             subprocess.Popen(['omarchy-menu','toggle','system']);return
         if action in ('release','cancel','escape'):

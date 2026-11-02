@@ -105,12 +105,19 @@ ShellRoot {
                         Row {
                             anchors { top: parent.top; left: parent.left; right: parent.right; margins: 12 }
                             spacing: 9
+                            Text {
+                                visible: card.index < 10
+                                text: (card.index + 1) % 10
+                                color: "#9acbff"
+                                font.pixelSize: 15
+                                font.bold: true
+                            }
                             Image {
                                 width: 20; height: 20
                                 source: Quickshell.iconPath(root.iconFor(card.modelData.class), "application-x-executable")
                             }
                             Text {
-                                width: 174
+                                width: card.index < 10 ? 160 : 174
                                 text: card.modelData.title || card.modelData.class
                                 color: "#f4f5fa"
                                 font.pixelSize: 13
@@ -144,7 +151,7 @@ ShellRoot {
             }
             Text {
                 anchors { bottom: parent.bottom; bottomMargin: 13; horizontalCenter: parent.horizontalCenter }
-                text: "Hold Alt · Tab to choose · Middle-click to close · Release Alt to switch"
+                text: "Hold Super · Tab or letter to choose · Number to switch · Middle-click to close · Esc to cancel"
                 color: "#bac1d1"
                 font.pixelSize: 12
             }
