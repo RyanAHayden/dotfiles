@@ -20,6 +20,8 @@ require("hypr.monitors")
 require("hypr.input")
 require("hypr.bindings")
 require("hypr.looknfeel")
+-- untracked machine-local rules (not in dotfiles)
+if io.open(os.getenv("HOME") .. "/.config/hypr/local.lua") then require("hypr.local") end
 require("hypr.autostart")
 
 -- Toggle config flags dynamically.
@@ -73,6 +75,7 @@ o.window({ title = "^Hot Shots Tennis \\(shot\\)$" }, { workspace = "1 silent", 
 
 -- Scratchpad apps (toggled by ~/bin/scratch-app from bindings.lua)
 o.window({ class = "^discord$" }, { workspace = "special:scratchpad silent" })
+o.window({ class = "^Spotify$" }, { workspace = "special:scratchpad silent" })
 o.window({ class = "^org\\.keepassxc\\.KeePassXC$" }, { workspace = "special:scratchpad silent" })
 
 -- Per-game MangoHud frame cap (bin/fps-cap.sh): apply the focused game's remembered cap

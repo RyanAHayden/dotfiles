@@ -1,8 +1,8 @@
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 -- List current monitors and supported resolutions with: hyprctl monitors all
 
-local omarchy_gdk_scale = 1
-local omarchy_monitor_scale = 1
+local omarchy_gdk_scale = 2
+local omarchy_monitor_scale = 1.6
 
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })
@@ -36,7 +36,8 @@ local function lg_dual_mode_scale()
   end
   local scale = clean_scale(math.max(1, tonumber(base) * ratio), m.width, m.height)
   hl.env("GDK_SCALE", tostring(math.floor(scale + 0.5)))
-  if math.abs(m.scale - scale) > 0.01 then
+  -- compare to the file scale, not m.scale: on reload line 8 re-applies it, m.scale is still the old value
+  if math.abs(omarchy_monitor_scale - scale) > 0.01 then
     hl.monitor({ output = "DP-1", mode = "preferred", position = "auto", scale = scale })
   end
 end
