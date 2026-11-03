@@ -12,7 +12,7 @@ crunch = float(args[2]) if len(args) > 2 else 2.0
 
 im = Image.open(args[0]).convert("L")
 w = cols * 2
-h = max(4, round(im.height * w / im.width / 2 / 4) * 4)  # /2: terminal cells are ~2x tall
+h = max(4, round(im.height * w / im.width / 4) * 4)  # braille dots are ~square, no cell-aspect fix needed
 im = im.resize((w, h), Image.LANCZOS)
 if crunch > 1:
     im = ImageOps.equalize(im)  # spread tones so mid-greys separate
