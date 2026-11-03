@@ -148,10 +148,15 @@ o.bind("SUPER + SHIFT + ALT + BACKSPACE", "Less window transparency", "~/bin/win
 o.bind("SUPER + SHIFT + mouse_up", "Window volume up", "~/bin/window-volume.sh +5%")
 o.bind("SUPER + SHIFT + mouse_down", "Window volume down", "~/bin/window-volume.sh -5%")
 
--- No mouse-button binds: Hyprland 0.56.2 crashed (use-after-free in a Lua bind's string
--- upvalue, "release") on a mouse-button bind, 2026-11-02. Re-add after an upstream fix.
-hl.unbind("SUPER + mouse:272") -- was: Move window (drag)
-hl.unbind("SUPER + mouse:273") -- was: Resize window (drag)
+-- Mouse-button binds temporarily OFF: Hyprland 0.56.2 crashed on one (use-after-free of a Lua
+-- bind's string upvalue, "release"), 2026-11-02. Flip to true once upstream fixes it.
+local mouse_button_binds = false
+if mouse_button_binds then
+	o.bind("SUPER + SHIFT + mouse:273", "Toggle window mute", "~/bin/window-volume.sh mute")
+else
+	hl.unbind("SUPER + mouse:272") -- Omarchy default: Move window (drag)
+	hl.unbind("SUPER + mouse:273") -- Omarchy default: Resize window (drag)
+end
 
 -- SUPER + scroll zooms the screen around the cursor instead of switching workspaces
 hl.unbind("SUPER + CTRL + Z")
