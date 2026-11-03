@@ -68,4 +68,8 @@ yay -S --needed xpadneo-dkms
 sudo install -Dm644 "$DOTFILES/etc/modprobe.d/xpadneo.conf" /etc/modprobe.d/xpadneo.conf
 sudo install -Dm644 "$DOTFILES/etc/udev/rules.d/99-gulikit-no-ff.rules" /etc/udev/rules.d/99-gulikit-no-ff.rules
 
+echo "==> reserve Sunshine ports from ephemeral range (avoids bind EADDRINUSE crash loop)"
+sudo install -Dm644 "$DOTFILES/etc/sysctl.d/90-sunshine-ports.conf" /etc/sysctl.d/90-sunshine-ports.conf
+sudo sysctl -p /etc/sysctl.d/90-sunshine-ports.conf
+
 echo "Done - check git changes since we adopted your default files"
