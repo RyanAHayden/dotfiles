@@ -66,6 +66,10 @@ o.window({ tag = "drpopup" }, {
 	opacity = "1 1",
 })
 
+-- Unity editor (and its popups and fullscreen Game view): always fully opaque, so
+-- game views and CRT captures show true colors and nothing behind bleeds through.
+o.window({ class = "^Unity$" }, { tag = "-default-opacity", opacity = "1 1" })
+
 -- open-tennis test windows (the remaster's --shot runs are titled "Hot Shots Tennis (shot)";
 -- a normal launch is plain "Hot Shots Tennis" and opens normally) open on workspace 1
 -- without taking focus, and drop under every other window there as soon as they map.
