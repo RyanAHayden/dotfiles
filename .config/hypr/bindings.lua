@@ -147,7 +147,11 @@ o.bind("SUPER + SHIFT + ALT + BACKSPACE", "Less window transparency", "~/bin/win
 -- Per-window volume for the window under the cursor
 o.bind("SUPER + SHIFT + mouse_up", "Window volume up", "~/bin/window-volume.sh +5%")
 o.bind("SUPER + SHIFT + mouse_down", "Window volume down", "~/bin/window-volume.sh -5%")
-o.bind("SUPER + SHIFT + mouse:273", "Toggle window mute", "~/bin/window-volume.sh mute")
+
+-- No mouse-button binds: Hyprland 0.56.2 crashed (use-after-free in a Lua bind's string
+-- upvalue, "release") on a mouse-button bind, 2026-11-02. Re-add after an upstream fix.
+hl.unbind("SUPER + mouse:272") -- was: Move window (drag)
+hl.unbind("SUPER + mouse:273") -- was: Resize window (drag)
 
 -- SUPER + scroll zooms the screen around the cursor instead of switching workspaces
 hl.unbind("SUPER + CTRL + Z")
