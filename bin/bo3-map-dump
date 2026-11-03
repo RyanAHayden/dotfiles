@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+"""Dump the currently loaded BO3 map's BSP geometry to OBJ (Unity-ready: meters, Y-up).
+Port of Husky's BlackOps3.cs (GPL, Scobalula) reading /proc/<pid>/mem of the Proton process.
+Usage: bo3-map-dump [outdir]   (game must be running with a map loaded)
+"""
+import os, re, struct, sys, subprocess
+
+POOLS = 0x94073F0  # asset-pool RVA on the 2026 Steam exe (Husky's was 0x94093F0)
+# ponytail: geometry + material names only; static models (props) and textures need Greyhound.
+
+def pid():
+    out = subprocess.run(["pgrep", "-f", r"BlackOps3\.exe|boiii\.exe"], capture_output=True, text=True).stdout.split()
+    for p in out:
+        try:
+            if any(l.rstrip().lower().endswith("blackops3.exe") for l in open(f"/proc/{p}/maps", errors="ignore")):
+                return int(p)
+        except OSError:
+            pass
+    sys.exit("BO3 not running")
+
+def base(p):
+    for l in open(f"/proc/{p}/maps"):
+        if l.rstrip().lower().endswith("blackops3.exe"):
+            return int(l.split("-")[0], 16)
+    sys.exit("BlackOps3.exe not mapped")
+
+p = pid(); mem = open(f"/proc/{p}/mem", "rb", buffering=0)
+def rd(a, n): mem.seek(a); return mem.read(n)
+def q(a): return struct.unpack("<q", rd(a, 8))[0]
+def cstr(a):
+    b = rd(a, 256); return b[:b.find(b"\0")].decode(errors="replace")
+
+def ok(t):  # asset-pool table: entry 4 = xmodels (first is "void"), entry 16 = gfxworld
+    try: return cstr(q(q(t + 0x80))) == "void" and struct.unpack("<i", rd(t + 0x88, 4))[0] == 0x188
+    except OSError: return False
+
+def scan(b):
+    # ponytail: 3 brute passes over process memory (~a minute); only runs when offsets drift
+    def find(needles, image_only=False, aligned=False):
+        pat = re.compile(b"|".join(re.escape(n) for n in needles), re.S)
+        for l in open(f"/proc/{p}/maps"):
+            r, perm = l.split()[:2]
+            lo, hi = (int(x, 16) for x in r.split("-"))
+            if "r" not in perm or (image_only and not b <= lo < b + 0x40000000): continue
+            for c in range(lo, hi, 1 << 26):
+                try: d = rd(c, min((1 << 26) + 8, hi - c))
+                except OSError: continue
+                for m in pat.finditer(d):
+                    if not aligned or (c + m.start()) % 8 == 0: yield c + m.start()
+    pk = lambda a: struct.pack("<q", a)
+    names = {v + 1 for v in find([b"\0void\0"])}
+    print(f"scan: {len(names)} 'void' strings")
+    items = set(find([pk(v) for v in names], aligned=True)) if names else set()
+    print(f"scan: {len(items)} candidate assets")
+    for e in (find([pk(i) for i in items], image_only=True, aligned=True) if items else ()):
+        if ok(e - 0x80):
+            print(f"found pools at RVA {e - 0x80 - b:#x} (update POOLS)"); return e - 0x80
+    sys.exit("asset pool table not found")
+
+b = base(p); pools = b + POOLS
+if not ok(pools): pools = scan(b)
+
+def gfxmap(g):  # sanity-check the GfxMap layout: vertex buffer size == count * 12
+    try:
+        vc, vs = struct.unpack("<ii", rd(g + 0x268, 8))
+        return vc > 1000 and vs == vc * 12 and cstr(q(g + 8))
+    except (OSError, struct.error): return False
+
+g = q(pools + 0x200)
+if not gfxmap(g): sys.exit("no map loaded (in a match?)")
+mapname = cstr(q(g + 8))
+surf_count, = struct.unpack("<i", rd(g + 0x18, 4))
+o = 0x1C + 0x24C
+vcount, _ = struct.unpack("<ii", rd(g + o, 8)); vptr = q(g + o + 8)
+dptr = q(g + o + 0x20)
+icount = q(g + o + 0x30); iptr = q(g + o + 0x38)
+sptr = q(g + o + 0x40 + 0x54 + 4 + 0x130)
+print(f"{mapname}: {vcount} verts, {icount} indices, {surf_count} surfaces")
+
+pos = struct.unpack(f"<{vcount*3}f", rd(vptr, vcount * 12))
+data = rd(dptr, vcount * 20)
+idx = struct.unpack(f"<{icount}H", rd(iptr, icount * 2))
+
+out = sys.argv[1] if len(sys.argv) > 1 else f"{mapname}"
+os.makedirs(out, exist_ok=True)
+mats = {}
+with open(f"{out}/{mapname}.obj", "w") as f:
+    f.write(f"mtllib {mapname}.mtl\n")
+    for i in range(vcount):  # CoD inches Z-up -> meters Y-up (rotate -90 about X, keeps handedness)
+        x, y, z = pos[i*3:i*3+3]
+        f.write(f"v {x*.0254:.4f} {z*.0254:.4f} {-y*.0254:.4f}\n")
+    for i in range(vcount):
+        u, v = struct.unpack_from("<ff", data, i * 20 + 4)
+        f.write(f"vt {u:.5f} {1-v:.5f}\n")
+    for s in range(surf_count):
+        b = rd(sptr + s * 96, 96)
+        voff, = struct.unpack_from("<i", b, 0xC)
+        fcount, fidx, mptr = struct.unpack_from("<H", b, 0x2A)[0], struct.unpack_from("<i", b, 0x2C)[0], struct.unpack_from("<q", b, 0x48)[0]
+        mat = re.sub(r"\W", "_", cstr(q(mptr)).replace("*", ""))
+        mats[mat] = None
+        f.write(f"usemtl {mat}\n")
+        for t in range(fcount):
+            a, c, d = (idx[fidx + t*3 + k] + voff // 12 + 1 for k in range(3))
+            if len({a, c, d}) == 3:
+                f.write(f"f {a}/{a} {d}/{d} {c}/{c}\n")  # Husky's 1,3,2 winding
+with open(f"{out}/{mapname}.mtl", "w") as f:
+    f.writelines(f"newmtl {m}\nKd 0.7 0.7 0.7\n" for m in mats)
+print(f"wrote {out}/{mapname}.obj ({len(mats)} materials)")
