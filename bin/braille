@@ -7,7 +7,7 @@ from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 args = [a for a in sys.argv[1:] if a != "--invert"]
 if not args:
     sys.exit(__doc__)
-cols = int(args[1]) if len(args) > 1 else 60
+cols = int(args[1]) if len(args) > 1 else 20
 crunch = float(args[2]) if len(args) > 2 else 2.0
 
 im = Image.open(args[0]).convert("L")
