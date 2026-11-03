@@ -41,7 +41,11 @@ o.bind("SUPER + SHIFT + RETURN", "Browser (Blank window)", "omarchy-launch-brows
 hl.unbind("SUPER + SHIFT + F") -- was: nautilus
 o.bind("SUPER + SHIFT + F", "File manager", "uwsm-app -- dolphin --new-window")
 hl.unbind("SUPER + ALT + SHIFT + F") -- was: nautilus
-o.bind("SUPER + ALT + SHIFT + F", "File manager (cwd)", 'uwsm-app -- dolphin --new-window "$(omarchy-cmd-terminal-cwd)"')
+o.bind(
+	"SUPER + ALT + SHIFT + F",
+	"File manager (cwd)",
+	'uwsm-app -- dolphin --new-window "$(omarchy-cmd-terminal-cwd)"'
+)
 hl.unbind("SUPER + SHIFT + B") -- was: Browser
 o.bind("SUPER + SHIFT + B", "Browser", "omarchy-launch-browser")
 
@@ -150,7 +154,7 @@ o.bind("SUPER + SHIFT + mouse_down", "Window volume down", "~/bin/window-volume.
 
 -- Mouse-button binds temporarily OFF: Hyprland 0.56.2 crashed on one (use-after-free of a Lua
 -- bind's string upvalue, "release"), 2026-11-02. Flip to true once upstream fixes it.
-local mouse_button_binds = false
+local mouse_button_binds = true
 if mouse_button_binds then
 	o.bind("SUPER + SHIFT + mouse:273", "Toggle window mute", "~/bin/window-volume.sh mute")
 else
@@ -208,7 +212,12 @@ hl.define_submap("recent-switcher", function()
 	o.bind("SUPER + SHIFT + TAB", "Switch backward through recent windows", sw .. "back")
 	o.bind("SUPER + ESCAPE", "Cancel window switcher", sw .. "cancel")
 	for _, key in ipairs({ "SUPER_L", "SUPER_R" }) do
-		o.bind("SUPER + " .. key, nil, sw .. "release", { release = true, ignore_mods = true, non_consuming = true, transparent = true })
+		o.bind(
+			"SUPER + " .. key,
+			nil,
+			sw .. "release",
+			{ release = true, ignore_mods = true, non_consuming = true, transparent = true }
+		)
 	end
 	-- Super+N picks the window badged N (1-9, 0 = 10th) and switches immediately.
 	for n = 1, 10 do
