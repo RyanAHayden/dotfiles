@@ -45,6 +45,3 @@ alias c=cld
 # t [session] = attach (to named session if given), else new "Work"
 unalias t 2>/dev/null
 t() { tmux attach ${1:+-t "$1"} || tmux new -s "${1:-Work}"; }
-
-# Ctrl+G (like Claude Code, and the Mac zsh) = edit the command line in $EDITOR, like Ctrl+X Ctrl+E
-bind '"\C-g": edit-and-execute-command'
