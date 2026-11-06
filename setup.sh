@@ -21,9 +21,6 @@ if [ -d "$DOTFILES/.local" ]; then
 fi
 omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
 
-echo "==> gamescope CAP_SYS_NICE (stretched-res perf, see README)"
-command -v gamescope >/dev/null && sudo setcap 'CAP_SYS_NICE=eip' "$(command -v gamescope)"
-
 echo "==> dolphin as file manager (hypr binds in .config/hypr/bindings.lua)"
 sudo pacman -S --needed dolphin
 xdg-mime default org.kde.dolphin.desktop inode/directory

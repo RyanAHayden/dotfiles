@@ -1,0 +1,4 @@
+# Copy to ~/.config/wake-pc.conf (untracked) and fill in. Read by bin/wake-pc.
+RELAY=nas                 # ssh host on the sleeping PC's LAN that stays on (needs python3)
+MAC=aa:bb:cc:dd:ee:ff     # sleeping PC's wired NIC: ip -br link
+BCAST=192.168.1.255       # LAN broadcast address (optional, default 255.255.255.255)
