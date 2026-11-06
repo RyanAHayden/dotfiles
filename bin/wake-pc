@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# wake-pc: wake this desktop from sleep via an always-on LAN box (Wake-on-LAN relayed over SSH/Tailscale).
+# Usage: wake-pc            (needs ~/.config/wake-pc.conf, kept out of dotfiles:)
+#   RELAY=<ssh host on target LAN>  MAC=<target NIC mac>  BCAST=<LAN broadcast, e.g. x.x.x.255>
+# Target setup, once: nmcli c modify "<wired conn>" 802-3-ethernet.wake-on-lan magic
+# No dotfiles on the device (phone)? ssh to the relay and send the packet from there.
+set -euo pipefail
+source "${XDG_CONFIG_HOME:-$HOME/.config}/wake-pc.conf"
+ssh "$RELAY" python3 - "$MAC" "${BCAST:-255.255.255.255}" <<'PY'
+import socket, sys
+mac = bytes.fromhex(sys.argv[1].replace(":", ""))
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+s.sendto(b"\xff" * 6 + mac * 16, (sys.argv[2], 9))
+print("magic packet sent")
+PY
