@@ -21,6 +21,10 @@ if [ -d "$DOTFILES/.local" ]; then
 fi
 omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
 
+echo "==> LibreWolf (github.com/RyanAHayden/librewolf, shared with hypr-mac)"
+[ -d ~/librewolf ] || git clone -q https://github.com/RyanAHayden/librewolf ~/librewolf
+~/librewolf/setup.sh
+
 echo "==> dolphin as file manager (hypr binds in .config/hypr/bindings.lua)"
 sudo pacman -S --needed dolphin
 xdg-mime default org.kde.dolphin.desktop inode/directory
