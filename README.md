@@ -6,7 +6,7 @@ Use at your own risk.
 
 `./setup.sh` - safe to re-run (e.g. after `omarchy refresh sddm` / `omarchy refresh limine`). It:
 
-- stows everything with `--adopt`, so existing files get pulled in and show up as git changes to keep or discard
+- stows everything with `--adopt`, so existing files get pulled in as git changes; the end lists them with the command to put the repo's versions back
 - installs the [ryha-omarchy theme](https://github.com/RyanAHayden/ryha-omarchy-theme), its plymouth boot logo, the limine boot menu theme and the sddm theme (+ greeter screen-off when idle)
 - sets up Zen from [zen](https://github.com/RyanAHayden/zen) (cloned to `~/zen`), the same prefs, mods, shortcuts and extensions hypr-mac uses
 - sets up Vencord from [vencord](https://github.com/RyanAHayden/vencord) (cloned to `~/vencord`): patches it into Discord and stows its settings (Discord's minimum window size off)

@@ -9,6 +9,10 @@ echo "==> dotfiles setup"
 
 command -v stow >/dev/null || sudo pacman -S stow
 cd "$DOTFILES"
+# stow --adopt replaces repo files with ones already on the machine; compare tracked changes before and after so
+# the end can list just those (not edits that were already there)
+changed() { git -C "$DOTFILES" status --porcelain -z --untracked-files=no | while IFS= read -r -d "" e; do echo "$(git -C "$DOTFILES" hash-object "${e:3}" 2>/dev/null) ${e:3}"; done; }
+before=$(changed)
 stow . --adopt
 # .local is stowed separately (rooted at .local/, .stowrc ignores it in the
 # main pass) so stow never sees the top-level bin/ package while placing
@@ -19,6 +23,7 @@ if [ -d "$DOTFILES/.local" ]; then
   stow -d "$DOTFILES/.local" -t "$HOME/.local" --adopt .
   chmod +x ~/.local/bin/*
 fi
+adopted=$(comm -13 <(sort <<<"$before") <(changed | sort) | cut -d' ' -f2-)
 omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
 
 echo "==> Zen (github.com/RyanAHayden/zen, shared with hypr-mac)"
@@ -84,4 +89,10 @@ echo "==> reserve Sunshine ports from ephemeral range (avoids bind EADDRINUSE cr
 sudo install -Dm644 "$DOTFILES/etc/sysctl.d/90-sunshine-ports.conf" /etc/sysctl.d/90-sunshine-ports.conf
 sudo sysctl -p /etc/sysctl.d/90-sunshine-ports.conf
 
-echo "Done - check git changes since we adopted your default files"
+if [ -n "$adopted" ]; then
+  echo
+  echo "==> stow pulled these existing files into $DOTFILES (yours replaced the repo's, see git diff):"
+  sed 's/^/  /' <<<"$adopted"
+  echo "  keep the repo's: git -C $DOTFILES checkout --$(while read -r f; do printf ' %q' "$f"; done <<<"$adopted")"
+fi
+echo "Done."
