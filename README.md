@@ -11,6 +11,7 @@ Use at your own risk.
 - sets up Zen from [zen](https://github.com/RyanAHayden/zen) (cloned to `~/zen`), the same prefs, mods, shortcuts and extensions hypr-mac uses
 - sets up Vencord from [vencord](https://github.com/RyanAHayden/vencord) (cloned to `~/vencord`): patches it into Discord and stows its settings (Discord's minimum window size off)
 - stows the LazyVim config from [nvim](https://github.com/RyanAHayden/nvim) (cloned to `~/nvim`) into `~/.config/nvim`, shared with hypr-mac
+- sets up Obsidian from [obsidian](https://github.com/RyanAHayden/obsidian) (cloned to `~/obsidian`) in the Syncthing-synced vault `~/sync/obsidian/notes`: vim mode, the Vimakase and Git plugins, Ctrl+H / Ctrl+L between the file explorer and the note, shared with hypr-mac
 - sets dolphin as the file manager (archives open as folders, scripts run without a prompt)
 - installs sudoers rules for `reboot-to-windows` and `toggle-gpu-high.sh`
 - installs xpadneo and blocks rumble on GuliKit pads (their firmware crashes on it)

@@ -39,6 +39,11 @@ echo "==> nvim config (github.com/RyanAHayden/nvim, shared with hypr-mac)"
 [ -d ~/nvim ] || git clone -q https://github.com/RyanAHayden/nvim ~/nvim
 ~/nvim/setup.sh
 
+echo "==> Obsidian (github.com/RyanAHayden/obsidian, shared with hypr-mac)"
+# also re-run it if a phone switches vim mode off in the synced vault
+[ -d ~/obsidian ] || git clone -q https://github.com/RyanAHayden/obsidian ~/obsidian
+~/obsidian/setup.sh
+
 echo "==> dolphin as file manager (hypr binds in .config/hypr/bindings.lua)"
 sudo pacman -S --needed dolphin
 xdg-mime default org.kde.dolphin.desktop inode/directory
