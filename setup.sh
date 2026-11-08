@@ -21,9 +21,9 @@ if [ -d "$DOTFILES/.local" ]; then
 fi
 omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
 
-echo "==> LibreWolf (github.com/RyanAHayden/librewolf, shared with hypr-mac)"
-[ -d ~/librewolf ] || git clone -q https://github.com/RyanAHayden/librewolf ~/librewolf
-~/librewolf/setup.sh
+echo "==> Zen (github.com/RyanAHayden/zen, shared with hypr-mac)"
+[ -d ~/zen ] || git clone -q https://github.com/RyanAHayden/zen ~/zen
+~/zen/setup.sh
 
 echo "==> dolphin as file manager (hypr binds in .config/hypr/bindings.lua)"
 sudo pacman -S --needed dolphin

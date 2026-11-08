@@ -8,7 +8,7 @@ Use at your own risk.
 
 - stows everything with `--adopt`, so existing files get pulled in and show up as git changes to keep or discard
 - installs the [ryha-omarchy theme](https://github.com/RyanAHayden/ryha-omarchy-theme), its plymouth boot logo, the limine boot menu theme and the sddm theme (+ greeter screen-off when idle)
-- sets up LibreWolf from [librewolf](https://github.com/RyanAHayden/librewolf) (cloned to `~/librewolf`), the same prefs and extensions hypr-mac uses
+- sets up Zen from [zen](https://github.com/RyanAHayden/zen) (cloned to `~/zen`), the same prefs, mods, shortcuts and extensions hypr-mac uses
 - sets dolphin as the file manager (archives open as folders, scripts run without a prompt)
 - installs sudoers rules for `reboot-to-windows` and `toggle-gpu-high.sh`
 - installs xpadneo and blocks rumble on GuliKit pads (their firmware crashes on it)
