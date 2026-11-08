@@ -9,6 +9,8 @@ Use at your own risk.
 - stows everything with `--adopt`, so existing files get pulled in and show up as git changes to keep or discard
 - installs the [ryha-omarchy theme](https://github.com/RyanAHayden/ryha-omarchy-theme), its plymouth boot logo, the limine boot menu theme and the sddm theme (+ greeter screen-off when idle)
 - sets up Zen from [zen](https://github.com/RyanAHayden/zen) (cloned to `~/zen`), the same prefs, mods, shortcuts and extensions hypr-mac uses
+- sets up Vencord from [vencord](https://github.com/RyanAHayden/vencord) (cloned to `~/vencord`): patches it into Discord and stows its settings (Discord's minimum window size off)
+- stows the LazyVim config from [nvim](https://github.com/RyanAHayden/nvim) (cloned to `~/nvim`) into `~/.config/nvim`, shared with hypr-mac
 - sets dolphin as the file manager (archives open as folders, scripts run without a prompt)
 - installs sudoers rules for `reboot-to-windows` and `toggle-gpu-high.sh`
 - installs xpadneo and blocks rumble on GuliKit pads (their firmware crashes on it)

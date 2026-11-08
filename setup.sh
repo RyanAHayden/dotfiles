@@ -25,6 +25,15 @@ echo "==> Zen (github.com/RyanAHayden/zen, shared with hypr-mac)"
 [ -d ~/zen ] || git clone -q https://github.com/RyanAHayden/zen ~/zen
 ~/zen/setup.sh
 
+echo "==> Vencord (github.com/RyanAHayden/vencord, shared with hypr-mac)"
+# it also patches Vencord into Discord, which Discord updates undo: re-run ~/vencord/setup.sh after one
+[ -d ~/vencord ] || git clone -q https://github.com/RyanAHayden/vencord ~/vencord
+~/vencord/setup.sh
+
+echo "==> nvim config (github.com/RyanAHayden/nvim, shared with hypr-mac)"
+[ -d ~/nvim ] || git clone -q https://github.com/RyanAHayden/nvim ~/nvim
+~/nvim/setup.sh
+
 echo "==> dolphin as file manager (hypr binds in .config/hypr/bindings.lua)"
 sudo pacman -S --needed dolphin
 xdg-mime default org.kde.dolphin.desktop inode/directory
