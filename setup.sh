@@ -3,6 +3,12 @@
 # Safe to re-run any time (e.g. after `omarchy refresh sddm`/`omarchy refresh limine`).
 set -euo pipefail
 
+# runs as you (it sudo's the system steps itself); under `sudo ./setup.sh` HOME is /root, so drop back to the user
+if [ "$EUID" -eq 0 ]; then
+  [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != root ] || { echo "run as your user: ./setup.sh" >&2; exit 1; }
+  exec sudo -u "$SUDO_USER" -H -- "$(realpath "${BASH_SOURCE[0]}")" "$@"
+fi
+
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "==> dotfiles setup"
