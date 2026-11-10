@@ -21,10 +21,22 @@ stow . --adopt
 # .local/bin/* into ~/bin instead of ~/.local/bin.
 if [ -d "$DOTFILES/.local" ]; then
   stow -d "$DOTFILES/.local" -t "$HOME/.local" --adopt .
-  chmod +x ~/.local/bin/*
+  # the repo's scripts, not ~/.local/bin/* (other installers drop links there, e.g. superwhisper -> /usr/bin)
+  chmod +x "$DOTFILES"/.local/bin/*
 fi
 adopted=$(comm -13 <(sort <<<"$before") <(changed | sort) | cut -d' ' -f2-)
 omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
+
+echo "==> git uses the gh login (push credentials + commit name/email)"
+gh auth status >/dev/null 2>&1 || gh auth login
+# plain `gh`, not `gh auth setup-git`, which writes mise's version-pinned path and breaks on the next gh upgrade
+for host in https://github.com https://gist.github.com; do
+  git config --global --replace-all "credential.$host.helper" ""
+  git config --global --add "credential.$host.helper" "!gh auth git-credential"
+done
+# GitHub noreply address, so commits link to the account without exposing a real email
+git config --global user.name "$(gh api user --jq '.name // .login')"
+git config --global user.email "$(gh api user --jq '"\(.id)+\(.login)@users.noreply.github.com"')"
 
 echo "==> Zen (github.com/RyanAHayden/zen, shared with hypr-mac)"
 [ -d ~/zen ] || git clone -q https://github.com/RyanAHayden/zen ~/zen
