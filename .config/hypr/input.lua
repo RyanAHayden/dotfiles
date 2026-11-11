@@ -9,7 +9,8 @@ hl.config({
 		-- kb_layout = "us,dk,eu",
 		kb_layout = "us",
 		-- kb_options = "compose:caps,shift:both_capslock,grp:alts_toggle",
-		kb_options = "compose:ralt",
+		-- Laptop mode: Caps is Ctrl (ctrl:nocaps), always on, no keyd needed. bin/laptop-keys (keyd) adds Fn + hjkl.
+		kb_options = "compose:ralt" .. (require("hypr.laptop") and ",ctrl:nocaps" or ""),
 
 		-- Use a specific keyboard variant if needed (e.g. intl for international keyboards).
 		-- kb_variant = "intl",
@@ -38,7 +39,7 @@ hl.config({
 			scroll_factor = 0.4,
 
 			-- Enable the touchpad while typing.
-			disable_while_typing = false,
+			disable_while_typing = true,
 
 			-- Left-click-and-drag with three fingers.
 			drag_3fg = 1,

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Laptop keys on/off: keyd with etc/keyd/default.conf (Caps is Ctrl, Fn + hjkl are arrows). Stays as set across reboots.
+# Usage: laptop-keys [on|off|toggle|status]   (default: toggle; bound to SUPER+CTRL+ALT+K)
+# Passwordless via /etc/sudoers.d/laptop-keys (installed by setup.sh, with keyd and its config).
+set -uo pipefail
+
+notify() { omarchy-notification-send -u "$1" "$2" "${3:-}" 2>/dev/null || echo "$2${3:+: $3}"; }
+on() { systemctl is-enabled --quiet keyd.service 2>/dev/null; }
+
+case "${1:-toggle}" in
+on) want=on ;;
+off) want=off ;;
+toggle) on && want=off || want=on ;;
+status) on && echo on || echo off; exit ;;
+*) echo "usage: laptop-keys [on|off|toggle|status]" >&2; exit 2 ;;
+esac
+
+if [ ! -f /etc/keyd/default.conf ] || ! command -v keyd >/dev/null; then
+	notify critical "Laptop keys unavailable" "Run setup.sh to install keyd and its config"
+	exit 1
+fi
+[ "$want" = on ] && action=enable || action=disable
+if ! sudo -n systemctl "$action" --now keyd.service 2>/dev/null; then
+	notify critical "Laptop keys: couldn't $action keyd" "Run setup.sh to install /etc/sudoers.d/laptop-keys"
+	exit 1
+fi
+[ "$want" = on ] && notify low "Laptop keys on" "Caps is Ctrl, Fn + hjkl are arrows" || notify low "Laptop keys off"

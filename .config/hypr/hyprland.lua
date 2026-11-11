@@ -78,8 +78,9 @@ o.window({ class = "^Unity$" }, { tag = "-default-opacity", opacity = "1 1" })
 o.window({ title = "^Hot Shots Tennis \\(shot\\)$" }, { workspace = "1 silent", no_initial_focus = true })
 
 -- Scratchpad apps (toggled by ~/bin/scratch-app from bindings.lua)
-o.window({ class = "^discord$" }, { workspace = "special:scratchpad silent" })
-o.window({ class = "^Spotify$" }, { workspace = "special:scratchpad silent" })
+-- (ARM has no Discord/Spotify clients, so setup.sh installs web apps: Chromium names those windows chrome-<url>-Default)
+o.window({ class = "^(discord|chrome-discord\\.com__channels_@me-Default)$" }, { workspace = "special:scratchpad silent" })
+o.window({ class = "^(Spotify|chrome-open\\.spotify\\.com__-Default)$" }, { workspace = "special:scratchpad silent" })
 o.window({ class = "^org\\.keepassxc\\.KeePassXC$" }, { workspace = "special:scratchpad silent" })
 
 -- Per-game MangoHud frame cap (bin/fps-cap.sh): apply the focused game's remembered cap

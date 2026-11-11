@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Laptop battery savings, on whenever a laptop (omarchy-hw-laptop, the shared laptop-mode check) is on
+# battery. Does nothing on the desktop, so it's safe to start everywhere.
+#   battery-mode watch         suspend after LOCKED_SUSPEND of continuous lock on battery (autostart.lua)
+#   battery-mode idle-suspend  suspend now if on battery (what the watcher runs)
+# Omarchy's idle service locks at ~5 min but never suspends, and hypridle no longer runs in the session.
+# Stay-awake and systemd inhibitors still block it.
+# Animations and the keyboard backlight are left alone on battery (backlight: F4/F5 and Omarchy's keys).
+# Not the power profile: PPD's power-saver fails on Asahi (writes cpufreq/boost, which doesn't exist), and
+# Omarchy's shell already switches profiles on plug/unplug where they work.
+set -u
+
+LOCKED_SUSPEND=600 # locked this long on battery -> suspend (~15 min idle with the 5 min lock)
+STAY_AWAKE="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/indicators/stay-awake"
+
+# Same signal as Omarchy's shell and omarchy-powerprofiles-set, so all agree on the power source.
+on_battery() {
+	[[ $(busctl get-property org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower OnBattery 2>/dev/null) == "b true" ]]
+}
+
+idle_suspend() {
+	on_battery && [[ ! -e $STAY_AWAKE ]] && systemctl suspend
+}
+
+# Poll the lock once a minute; suspend after LOCKED_SUSPEND seconds of continuous lock on battery.
+suspend_when_locked() {
+	local locked_since=0 now
+	while sleep 60; do
+		now=$(date +%s)
+		if [[ $(omarchy-shell lock isLocked 2>/dev/null) == true ]] && on_battery; then
+			((locked_since)) || locked_since=$now
+			if ((now - locked_since >= LOCKED_SUSPEND)); then
+				idle_suspend
+				locked_since=0 # resume starts a fresh count (wake leaves the lock up)
+			fi
+		else
+			locked_since=0
+		fi
+	done
+}
+
+case "${1:-}" in
+watch)
+	omarchy-hw-laptop || exit 0
+	suspend_when_locked
+	;;
+idle-suspend)
+	omarchy-hw-laptop && idle_suspend
+	;;
+*)
+	echo "usage: battery-mode watch|idle-suspend" >&2
+	exit 1
+	;;
+esac

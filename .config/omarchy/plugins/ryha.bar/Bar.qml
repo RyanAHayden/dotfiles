@@ -51,6 +51,48 @@ Item {
   })
   property var layoutConfig: fallbackBarConfig.layout
   property string centerAnchor: ""
+  // Camera notch (MacBook): the center section ends just left of it instead of sitting under it.
+  // Panels come from Omarchy's /usr/share/omarchy-platform/display-cutouts.json, which gives the notch's height but
+  // not its width, so the width is `bar.notchWidth` in shell.json (logical px) or this share of the screen width.
+  property real notchWidth: 0
+  readonly property real notchWidthFraction: 0.14
+  property var displayCutouts: []
+  FileView {
+    path: "/usr/share/omarchy-platform/display-cutouts.json"
+    blockLoading: true
+    watchChanges: true
+    printErrors: false
+    onLoaded: root.displayCutouts = root.parseCutouts(text())
+    onLoadFailed: root.displayCutouts = []
+    onFileChanged: reload()
+  }
+  function parseCutouts(text) {
+    try {
+      var panels = JSON.parse(String(text || "")).panels
+      return Array.isArray(panels) ? panels.filter(function(p) {
+        return p && typeof p.connector === "string" && Number(p.width) > 0 && Number(p.height) > 0
+      }) : []
+    } catch (error) {
+      return []
+    }
+  }
+  // Space to keep clear of on each side of the screen's middle (half the notch, plus a gap), or 0 for no notch.
+  // Matched like Omarchy's own bar: connector prefix and the physical mode Hyprland reports, unrotated.
+  function notchInsetFor(screen) {
+    if (!screen || root.vertical || root.position !== "top") return 0
+    var monitor = Hyprland.monitorFor(screen)
+    if (!monitor || !(monitor.width > 0)) return 0
+    var transform = monitor.lastIpcObject ? Number(monitor.lastIpcObject.transform) || 0 : 0
+    if (transform !== 0 && transform !== 4) return 0
+    for (var i = 0; i < root.displayCutouts.length; i++) {
+      var p = root.displayCutouts[i]
+      if (String(screen.name).indexOf(p.connector) !== 0) continue
+      if (Math.abs(monitor.width - p.width) > 4 || Math.abs(monitor.height - p.height) > 4) continue
+      var width = root.notchWidth > 0 ? root.notchWidth : screen.width * root.notchWidthFraction
+      return width / 2 + Style.space(8)
+    }
+    return 0
+  }
   property bool requestedTransparent: false
   property bool useTransparentForeground: false
   property bool transparent: false
@@ -598,6 +640,7 @@ Item {
     position = normalizePosition(config.position)
     setRequestedTransparency(config.transparent === true)
     centerAnchor = Util.canonicalWidgetId(config.centerAnchor || "")
+    notchWidth = Number(config.notchWidth) > 0 ? Number(config.notchWidth) : 0
 
     // layoutEntries feeds plain JS arrays to the module Repeaters, and QML
     // cannot diff those: reassigning layoutConfig rebuilds every widget on
@@ -1367,7 +1410,10 @@ Item {
       Item {
         anchors.fill: parent
 
-        CenterModules { anchors.fill: parent }
+        CenterModules {
+          anchors.fill: parent
+          notchInset: root.notchInsetFor(barWindow.screen)
+        }
 
         LeftModules {
           anchors.left: parent.left
@@ -1549,6 +1595,8 @@ Item {
     id: centerRoot
 
     property var entries: root.layoutEntries("center")
+    // >0 on a notched screen: the section's right edge sits this far left of the middle (root.notchInsetFor)
+    property real notchInset: 0
     readonly property bool hasAnchor: root.entryIndex(entries, root.centerAnchor) !== -1
     readonly property var anchorEntry: root.findCenterAnchorEntry()
 
@@ -1573,7 +1621,8 @@ Item {
           visible: !centerRoot.hasAnchor
           entries: centerRoot.entries
           region: "center"
-          anchors.centerIn: parent
+          x: centerRoot.notchInset > 0 ? parent.width / 2 - centerRoot.notchInset - width : (parent.width - width) / 2
+          anchors.verticalCenter: parent.verticalCenter
         }
 
         ModuleList {

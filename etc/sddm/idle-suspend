@@ -1,0 +1,6 @@
+#!/bin/bash
+# SDDM greeter idle (etc/sddm/hypridle.conf): suspend a laptop sitting at the login screen on battery,
+# like bin/battery-mode does in the session. No-op on the desktop and on AC.
+omarchy-hw-laptop || exit 0
+[[ $(busctl get-property org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower OnBattery 2>/dev/null) == "b true" ]] || exit 0
+systemctl suspend

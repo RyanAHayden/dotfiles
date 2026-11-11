@@ -6,10 +6,13 @@ local omarchy_monitor_scale = 1.6
 
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })
+hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = 2 })
 
 -- LG dual mode: keep the scale you pick (Omarchy's scaling menu rewrites omarchy_monitor_scale)
 -- and carry it across 4K@240 <-> 1080p@480 at this ratio, never below 1. Runs on reload and when
 -- the mode switch re-adds DP-1. State: "<value set> <1080p-equivalent>". GDK_SCALE reaches new apps only.
+-- Desktop only (laptop mode skips it, see laptop.lua).
+if not require("hypr.laptop") then
 local LG_RATIO = 1.6 -- 4K scale / 1080p scale (from the 1.6 vs 1 pair used by hand)
 local lg_state = os.getenv("HOME") .. "/.local/state/omarchy/lg-scale"
 
@@ -55,6 +58,7 @@ hl.on("monitor.added", function()
   end, { timeout = 500, type = "oneshot" })
 end)
 lg_dual_mode_scale()
+end
 
 -- NOTE: TV (HDMI-A-1) mode/mirror lines below are overridden. Change MODE in ~/dotfiles/bin/toggle-monitor-mirror.sh
 -- (SUPER+CTRL+M) instead: its rule loads after this file, then press the toggle twice to apply.

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Toggle the scratchpad; launch the app into it first if no window exists.
 # Usage: scratch-app <class> <launch cmd...>
+# <class> may list alternatives with | (e.g. a native client and its web-app window on ARM).
 class=$1; shift
-if ! hyprctl clients -j | jq -e --arg c "$class" 'any(.[]; .class == $c)' >/dev/null; then
+if ! hyprctl clients -j | jq -e --arg c "$class" 'any(.[]; .class as $w | $c | split("|") | any(. == $w))' >/dev/null; then
 	uwsm-app -- "$@" &
 	# Already showing: keep it open for the new window instead of hiding it
 	hyprctl monitors -j | jq -e 'any(.[]; .specialWorkspace.name == "special:scratchpad")' >/dev/null && exit

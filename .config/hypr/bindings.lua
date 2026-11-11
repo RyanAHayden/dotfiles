@@ -33,7 +33,7 @@ o.bind(
 )
 
 hl.unbind("SUPER + ALT + SPACE")
-o.bind("SUPER + ALT + SPACE", "Dictate", "voxtype record toggle")
+o.bind("SUPER + ALT + SPACE", "Dictate", "omarchy dictation toggle") -- whichever backend is installed (superwhisper/voxtype)
 
 hl.unbind("SUPER + SHIFT + RETURN") -- was: Browser
 o.bind("SUPER + SHIFT + RETURN", "Browser (Blank window)", "omarchy-launch-browser --blank-window")
@@ -51,10 +51,16 @@ o.bind("SUPER + SHIFT + B", "Browser", "omarchy-launch-browser")
 
 hl.unbind("SUPER + SHIFT + ALT + B") -- was: Browser (private)
 o.bind("SUPER + SHIFT + ALT + B", "Browser (private)", "omarchy-launch-browser --private")
-o.bind("SUPER + SHIFT + M", "Spotify (scratchpad)", "~/bin/scratch-app Spotify spotify")
+-- native client on x86, web app on ARM (setup.sh installs whichever; omarchy-launch-spotify picks it)
+o.bind("SUPER + SHIFT + M", "Spotify (scratchpad)", "~/bin/scratch-app 'Spotify|chrome-open.spotify.com__-Default' omarchy-launch-spotify")
 
 hl.unbind("SUPER + SHIFT + C") -- was: Calendar
-o.bind("SUPER + SHIFT + C", "Discord (scratchpad)", "~/bin/scratch-app discord discord")
+o.bind(
+	"SUPER + SHIFT + C",
+	"Discord (scratchpad)",
+	"~/bin/scratch-app 'discord|chrome-discord.com__channels_@me-Default' "
+		.. "sh -c 'command -v discord >/dev/null && exec discord || exec omarchy-launch-webapp https://discord.com/channels/@me'"
+)
 
 hl.unbind("SUPER + SHIFT + G") -- was: Signal
 o.bind("SUPER + SHIFT + G", "Steam", "omarchy-launch-or-focus steam 'uwsm-app -- env GDK_SCALE=1 steam'")
@@ -63,7 +69,7 @@ hl.unbind("SUPER + SHIFT + SLASH") -- was: 1Password
 o.bind("SUPER + SHIFT + SLASH", "Passwords (scratchpad)", "~/bin/scratch-app org.keepassxc.KeePassXC keepassxc")
 
 hl.unbind("SUPER + SHIFT + S") -- was: Google Maps
-o.bind("SUPER + SHIFT + S", "Audio", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix")
+o.bind("SUPER + SHIFT + S", "Screenshot", "omarchy-capture-screenshot")
 
 hl.unbind("SUPER + SHIFT + P") -- was: Google Photos
 
@@ -72,24 +78,36 @@ hl.unbind("SUPER + CTRL + B") -- was: Bluetooth panel (omarchy.bluetooth)
 o.bind("SUPER + CTRL + B", "Bluetooth (bluetui)", "uwsm-app -- xdg-terminal-exec --app-id=bluetui -- bluetui")
 
 hl.unbind("SUPER + CTRL + A") -- was: Audio panel (omarchy.audio)
--- o.bind("SUPER + CTRL + A", "Audio (wiremix)", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix")
+o.bind("SUPER + CTRL + A", "Audio (wiremix)", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix") -- moved off SUPER+SHIFT+S (screenshot)
+
+-- Laptop keys (keyd): Caps -> Ctrl, Fn + hjkl -> arrows. Off by default; ~/bin/laptop-keys
+o.bind("SUPER + CTRL + ALT + K", "Toggle laptop keys: Caps as Ctrl and Fn+hjkl as arrows", "~/bin/laptop-keys toggle")
+
+-- MacBook F4/F5 = keyboard backlight down/up (laptop mode). Asahi's hid_apple sends them as Spotlight (XF86Search)
+-- and dictation (XF86AudioMicMute, Omarchy's mic mute); Fn+F4/F5 still give plain F4/F5.
+if require("hypr.laptop") then
+	hl.unbind("XF86AudioMicMute") -- was: Mute microphone
+	local kbd = { locked = true, repeating = true }
+	o.bind("XF86Search", "Keyboard brightness down", "omarchy-brightness-keyboard down", kbd)
+	o.bind("XF86AudioMicMute", "Keyboard brightness up", "omarchy-brightness-keyboard up", kbd)
+end
 
 -- Brightness controls
-o.bind("F23", "Brightness down 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display -5")
-o.bind("F24", "Brightness up 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display +5")
-o.bind("SHIFT + F23", "Brightness down 25%", "/home/ryha/dotfiles/bin/omarchy-brightness-display -25")
-o.bind("SHIFT + F24", "Brightness up 25%", "/home/ryha/dotfiles/bin/omarchy-brightness-display +25")
+o.bind("F23", "Brightness down 5%", "~/bin/omarchy-brightness-display -5")
+o.bind("F24", "Brightness up 5%", "~/bin/omarchy-brightness-display +5")
+o.bind("SHIFT + F23", "Brightness down 25%", "~/bin/omarchy-brightness-display -25")
+o.bind("SHIFT + F24", "Brightness up 25%", "~/bin/omarchy-brightness-display +25")
 
 -- Crosshair
 o.bind(
 	"F19",
 	"Show green crosshair",
-	"pkill crosshair; /home/ryha/.local/bin/crosshair/crosshair --image /home/ryha/.local/bin/crosshair/cross.png --gamma 1"
+	"pkill crosshair; ~/.local/bin/crosshair/crosshair --image ~/.local/bin/crosshair/cross.png --gamma 1"
 )
 o.bind(
 	"XF86Launch9",
 	"Show dot crosshair",
-	"pkill crosshair; /home/ryha/.local/bin/crosshair/crosshair --image /home/ryha/.local/bin/crosshair/dot.png --gamma 1"
+	"pkill crosshair; ~/.local/bin/crosshair/crosshair --image ~/.local/bin/crosshair/dot.png --gamma 1"
 )
 o.bind("XF86Tools", "Kill crosshair", "pkill crosshair")
 
@@ -173,11 +191,13 @@ o.bind("SUPER + mouse_down", "Zoom out", "~/bin/zoom out")
 -- SUPER + ALT + scroll adjusts display brightness (replaces group next/prev)
 hl.unbind("SUPER + ALT + mouse_down") -- was: Next window in group
 hl.unbind("SUPER + ALT + mouse_up") -- was: Previous window in group
-o.bind("SUPER + ALT + mouse_up", "Brightness up 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display +5")
-o.bind("SUPER + ALT + mouse_down", "Brightness down 5%", "/home/ryha/dotfiles/bin/omarchy-brightness-display -5")
+o.bind("SUPER + ALT + mouse_up", "Brightness up 5%", "~/bin/omarchy-brightness-display +5")
+o.bind("SUPER + ALT + mouse_down", "Brightness down 5%", "~/bin/omarchy-brightness-display -5")
 
--- Toggle DP-1 pin: press, switch LG dual mode (4K@240 <-> 1080p@480), press again
-o.bind("SUPER + CTRL + ALT + O", "Toggle monitor pin (dual-mode switch)", "~/bin/pin-monitors-toggle")
+-- Toggle DP-1 pin: press, switch LG dual mode (4K@240 <-> 1080p@480), press again. Desktop only (laptop.lua).
+if not require("hypr.laptop") then
+	o.bind("SUPER + CTRL + ALT + O", "Toggle monitor pin (dual-mode switch)", "~/bin/pin-monitors-toggle")
+end
 
 -- Toggle labels (title · program · pid) over every visible window (local.window-labels shell plugin)
 o.bind("SUPER + ALT + W", "Toggle window labels", "omarchy-shell windowlabels toggle")

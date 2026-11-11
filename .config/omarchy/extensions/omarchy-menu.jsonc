@@ -50,12 +50,15 @@
     "icon": "",
     "label": "Reboot to Windows",
     "description": "Reboot once into Windows Boot Manager",
+    // desktop only (laptop mode, as in .config/hypr/laptop.lua)
+    "when": "! omarchy-hw-laptop",
     "action": "~/bin/reboot-to-windows"
   },
   "trigger.toggle.repin-monitor": {
     "icon": "󰍹",
     "label": "Monitor Pin",
     "description": "Unpin, switch LG dual mode, then toggle again to re-pin",
+    "when": "! omarchy-hw-laptop",
     "checked": "systemctl is-active -q pin-monitors",
     "action": "~/bin/pin-monitors-toggle"
   }

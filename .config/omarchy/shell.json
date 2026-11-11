@@ -92,7 +92,8 @@
           "id": "omarchy.keyboard-layout"
         },
         {
-          "id": "omarchy.power"
+          "id": "omarchy.power",
+          "showPercentage": true
         },
         {
           "id": "omarchy.monitor"
@@ -108,7 +109,7 @@
       ]
     },
     "position": "top",
-    "transparent": false,
+    "transparent": true,
     "id": "ryha.bar"
   },
   "idle": {
