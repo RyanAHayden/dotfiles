@@ -14,7 +14,7 @@ DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "==> dotfiles setup"
 
-command -v stow >/dev/null || sudo pacman -S stow
+command -v stow >/dev/null || sudo pacman -S --needed --noconfirm stow
 cd "$DOTFILES"
 # stow --adopt replaces repo files with ones already on the machine; compare tracked changes before and after so
 # the end can list just those (not edits that were already there)
@@ -54,7 +54,7 @@ git config --global user.email "$(gh api user --jq '"\(.id)+\(.login)@users.nore
 
 echo "==> apps the keybindings launch (.config/hypr/bindings.lua)"
 # keepassxc SUPER+SHIFT+/, wiremix SUPER+CTRL+A, bluetui SUPER+CTRL+B (dolphin is with its config below)
-sudo pacman -S --needed keepassxc wiremix bluetui
+sudo pacman -S --needed --noconfirm keepassxc wiremix bluetui
 # Discord SUPER+SHIFT+C, Spotify SUPER+SHIFT+M: neither ships an ARM Linux client, so web apps there
 # (the bindings and scratchpad rules match either window)
 if omarchy-hw-x86; then
@@ -68,6 +68,9 @@ else
 fi
 # Steam SUPER+SHIFT+G (Omarchy's installer picks the GPU's lib32 drivers first; it starts Steam once when done)
 command -v steam >/dev/null || omarchy install gaming steam
+
+echo "==> Tailscale (Omarchy's installer: tailscaled, login, you as operator, Taildrop to ~/Downloads, admin web app)"
+omarchy-installed-service-tailscale || omarchy install service tailscale
 
 echo "==> Zen (github.com/RyanAHayden/zen, shared with hypr-mac)"
 [ -d ~/zen ] || git clone -q https://github.com/RyanAHayden/zen ~/zen
@@ -88,7 +91,7 @@ echo "==> Obsidian (github.com/RyanAHayden/obsidian, shared with hypr-mac)"
 ~/obsidian/setup.sh
 
 echo "==> dolphin as file manager (hypr binds in .config/hypr/bindings.lua)"
-sudo pacman -S --needed dolphin
+sudo pacman -S --needed --noconfirm dolphin
 xdg-mime default org.kde.dolphin.desktop inode/directory
 # dolphin defaults to konsole for Terminal=true apps (nvim.desktop etc.)
 kwriteconfig6 --file kdeglobals --group General --key TerminalApplication xdg-terminal-exec
@@ -96,7 +99,7 @@ kwriteconfig6 --file kdeglobals --group General --key TerminalService foot.deskt
 # no "execute this file?" prompt (run scripts); KDE sounds muted via stowed .config/plasma_workspace.notifyrc
 kwriteconfig6 --file kiorc --group "Executable scripts" --key behaviourOnLaunch execute
 # archives open as browsable folders in dolphin (bin/dolphin-archive); KDE file picker via portal
-sudo pacman -S --needed kio-extras xdg-desktop-portal-kde
+sudo pacman -S --needed --noconfirm kio-extras xdg-desktop-portal-kde
 for m in $(sed -n 's/^MimeType=//p' "$DOTFILES/.local/share/applications/dolphin-archive.desktop" | tr ';' ' '); do
   xdg-mime default dolphin-archive.desktop "$m"
 done
@@ -106,7 +109,7 @@ sudo cp -rT "$DOTFILES/etc/sddm-themes/omarchy-red" /usr/share/sddm/themes/omarc
 sudo cp "$DOTFILES/etc/sddm.conf.d/10-theme.conf" /etc/sddm.conf.d/10-theme.conf
 
 echo "==> sddm greeter idle: screen off at 5 min (burn-in protection), laptop on battery suspends at 15"
-sudo pacman -S --needed hypridle
+sudo pacman -S --needed --noconfirm hypridle
 sudo install -Dm644 "$DOTFILES/etc/sddm/hyprland.lua" /etc/sddm/hyprland.lua
 sudo install -Dm644 "$DOTFILES/etc/sddm/hypridle.conf" /etc/sddm/hypridle.conf
 sudo install -Dm755 "$DOTFILES/etc/sddm/idle-suspend" /etc/sddm/idle-suspend
@@ -131,15 +134,21 @@ fi
 echo "==> passwordless GPU max-clock toggle (bin/toggle-gpu-high.sh)"
 sudo install -m 440 -o root -g root "$DOTFILES/etc/sudoers.d/gpu-high" /etc/sudoers.d/gpu-high
 
-echo "==> laptop keys: Caps = Ctrl, Fn + hjkl = arrows (keyd; off until bin/laptop-keys or SUPER+CTRL+ALT+K)"
-sudo pacman -S --needed keyd
+echo "==> laptop keys: Caps = Ctrl, Fn + hjkl = arrows (keyd; on by default on laptops, toggle with bin/laptop-keys or SUPER+CTRL+ALT+K)"
+sudo pacman -S --needed --noconfirm keyd
 sudo install -Dm644 "$DOTFILES/etc/keyd/default.conf" /etc/keyd/default.conf
 sudo install -m 440 -o root -g root "$DOTFILES/etc/sudoers.d/laptop-keys" /etc/sudoers.d/laptop-keys
+# laptop mode: on by default (first run only, so turning it off with laptop-keys sticks); desktop stays off
+laptop_keys_done="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/laptop-keys-enabled"
+if omarchy-hw-laptop && [ ! -e "$laptop_keys_done" ]; then
+  sudo systemctl enable --now keyd
+  mkdir -p "$(dirname "$laptop_keys_done")" && touch "$laptop_keys_done"
+fi
 # pick up a changed config if it's already on
 systemctl is-active --quiet keyd && sudo keyd reload
 
 echo "==> xpadneo (BT Xbox-mode driver) + GuliKit rumble block (firmware crashes on rumble)"
-yay -S --needed xpadneo-dkms
+yay -S --needed --noconfirm --answerclean None --answerdiff None xpadneo-dkms
 sudo install -Dm644 "$DOTFILES/etc/modprobe.d/xpadneo.conf" /etc/modprobe.d/xpadneo.conf
 sudo install -Dm644 "$DOTFILES/etc/udev/rules.d/99-gulikit-no-ff.rules" /etc/udev/rules.d/99-gulikit-no-ff.rules
 

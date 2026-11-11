@@ -80,7 +80,7 @@ o.bind("SUPER + CTRL + B", "Bluetooth (bluetui)", "uwsm-app -- xdg-terminal-exec
 hl.unbind("SUPER + CTRL + A") -- was: Audio panel (omarchy.audio)
 o.bind("SUPER + CTRL + A", "Audio (wiremix)", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix") -- moved off SUPER+SHIFT+S (screenshot)
 
--- Laptop keys (keyd): Caps -> Ctrl, Fn + hjkl -> arrows. Off by default; ~/bin/laptop-keys
+-- Laptop keys (keyd): Caps -> Ctrl, Fn + hjkl -> arrows. setup.sh turns it on once on laptops, off on the desktop; ~/bin/laptop-keys
 o.bind("SUPER + CTRL + ALT + K", "Toggle laptop keys: Caps as Ctrl and Fn+hjkl as arrows", "~/bin/laptop-keys toggle")
 
 -- MacBook F4/F5 = keyboard backlight down/up (laptop mode). Asahi's hid_apple sends them as Spotlight (XF86Search)
