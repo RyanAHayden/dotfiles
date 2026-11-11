@@ -14,6 +14,13 @@ DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "==> dotfiles setup"
 
+# Unattended: the password is the only question, asked once here; sudo is kept fresh until the script exits.
+# Logins (gh, Tailscale) are skipped and listed at the end instead; git never stops to ask for credentials.
+sudo -v
+while sleep 60; do sudo -n true; kill -0 $$ 2>/dev/null || exit; done 2>/dev/null &
+export GIT_TERMINAL_PROMPT=0
+later=() # what's left for you, printed at the end
+
 command -v stow >/dev/null || sudo pacman -S --needed --noconfirm stow
 cd "$DOTFILES"
 # stow --adopt replaces repo files with ones already on the machine; compare tracked changes before and after so
@@ -42,19 +49,25 @@ if [ ! -e "$first_run_done" ]; then
 fi
 
 echo "==> git uses the gh login (push credentials + commit name/email)"
-gh auth status >/dev/null 2>&1 || gh auth login
-# plain `gh`, not `gh auth setup-git`, which writes mise's version-pinned path and breaks on the next gh upgrade
-for host in https://github.com https://gist.github.com; do
-  git config --global --replace-all "credential.$host.helper" ""
-  git config --global --add "credential.$host.helper" "!gh auth git-credential"
-done
-# GitHub noreply address, so commits link to the account without exposing a real email
-git config --global user.name "$(gh api user --jq '.name // .login')"
-git config --global user.email "$(gh api user --jq '"\(.id)+\(.login)@users.noreply.github.com"')"
+if gh auth status >/dev/null 2>&1; then
+  # plain `gh`, not `gh auth setup-git`, which writes mise's version-pinned path and breaks on the next gh upgrade
+  for host in https://github.com https://gist.github.com; do
+    git config --global --replace-all "credential.$host.helper" ""
+    git config --global --add "credential.$host.helper" "!gh auth git-credential"
+  done
+  # GitHub noreply address, so commits link to the account without exposing a real email
+  git config --global user.name "$(gh api user --jq '.name // .login')"
+  git config --global user.email "$(gh api user --jq '"\(.id)+\(.login)@users.noreply.github.com"')"
+else
+  echo "    not logged in, skipped"
+  later+=("GitHub: gh auth login, then re-run ./setup.sh (sets git's credential helper, name and email)")
+fi
 
 echo "==> apps the keybindings launch (.config/hypr/bindings.lua)"
-# keepassxc SUPER+SHIFT+/, wiremix SUPER+CTRL+A, bluetui SUPER+CTRL+B (dolphin is with its config below)
-sudo pacman -S --needed --noconfirm keepassxc wiremix bluetui
+# keepassxc SUPER+SHIFT+/, wiremix SUPER+CTRL+A (dolphin is with its config below)
+# qt5-wayland: KeePassXC is Qt5, and without it falls back to XWayland: unscaled on a HiDPI panel, and class
+# KeePassXC instead of org.keepassxc.KeePassXC (misses the scratchpad rule)
+sudo pacman -S --needed --noconfirm keepassxc qt5-wayland wiremix
 # Discord SUPER+SHIFT+C, Spotify SUPER+SHIFT+M: neither ships an ARM Linux client, so web apps there
 # (the bindings and scratchpad rules match either window)
 if omarchy-hw-x86; then
@@ -69,8 +82,20 @@ fi
 # Steam SUPER+SHIFT+G (Omarchy's installer picks the GPU's lib32 drivers first; it starts Steam once when done)
 command -v steam >/dev/null || omarchy install gaming steam
 
-echo "==> Tailscale (Omarchy's installer: tailscaled, login, you as operator, Taildrop to ~/Downloads, admin web app)"
-omarchy-installed-service-tailscale || omarchy install service tailscale
+echo "==> Syncthing (Arch's user unit: starts at login, no browser page)"
+# an old dotfiles override (removed) bound it to a mount that never exists, so it never ran; drop its stow link
+[ -L ~/.config/systemd/user/syncthing.service ] && [ ! -e ~/.config/systemd/user/syncthing.service ] && rm ~/.config/systemd/user/syncthing.service
+sudo pacman -S --needed --noconfirm syncthing
+systemctl --user daemon-reload
+systemctl --user enable --now syncthing.service
+
+echo "==> Tailscale (installed and started here; login is left for later)"
+sudo pacman -S --needed --noconfirm tailscale
+sudo systemctl enable --now tailscaled.service
+if ! tailscale status >/dev/null 2>&1; then
+  # Omarchy's installer re-checks the package/service, then logs in, makes you operator, sets up Taildrop + web app
+  later+=("Tailscale: omarchy install service tailscale (opens a login link)")
+fi
 
 echo "==> Zen (github.com/RyanAHayden/zen, shared with hypr-mac)"
 [ -d ~/zen ] || git clone -q https://github.com/RyanAHayden/zen ~/zen
@@ -118,13 +143,17 @@ sudo install -Dm644 "$DOTFILES/etc/sddm.conf.d/99-zz-greeter-idle.conf" /etc/sdd
 echo "==> boot logo (plymouth, via ryha-omarchy theme)"
 omarchy plymouth set by theme ryha-omarchy
 
-echo "==> limine boot menu theme"
-entries_line=$(sudo grep -n "^/" /boot/limine.conf | head -1 | cut -d: -f1)
-sudo bash -c "
-  tail -n +$entries_line /boot/limine.conf > /tmp/limine-entries.conf
-  cat '$DOTFILES/etc/limine/theme-header.conf' /tmp/limine-entries.conf > /boot/limine.conf
-  rm /tmp/limine-entries.conf
-"
+# Only where Limine boots the machine: the M3 boots m1n1 -> U-Boot with no /boot/limine.conf, and the grep failing
+# there stopped setup (set -e) before everything below it
+if sudo test -f /boot/limine.conf; then
+  echo "==> limine boot menu theme"
+  entries_line=$(sudo grep -n "^/" /boot/limine.conf | head -1 | cut -d: -f1)
+  sudo bash -c "
+    tail -n +$entries_line /boot/limine.conf > /tmp/limine-entries.conf
+    cat '$DOTFILES/etc/limine/theme-header.conf' /tmp/limine-entries.conf > /boot/limine.conf
+    rm /tmp/limine-entries.conf
+  "
+fi
 
 if ! omarchy-hw-laptop; then # desktop only (laptop mode, as in .config/hypr/laptop.lua)
   echo "==> passwordless reboot-to-windows (efibootmgr --bootnext 0001)"
@@ -161,5 +190,10 @@ if [ -n "$adopted" ]; then
   echo "==> stow pulled these existing files into $DOTFILES (yours replaced the repo's, see git diff):"
   sed 's/^/  /' <<<"$adopted"
   echo "  keep the repo's: git -C $DOTFILES checkout --$(while read -r f; do printf ' %q' "$f"; done <<<"$adopted")"
+fi
+if ((${#later[@]})); then
+  echo
+  echo "==> left for you:"
+  printf '  - %s\n' "${later[@]}"
 fi
 echo "Done."

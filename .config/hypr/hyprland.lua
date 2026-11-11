@@ -50,8 +50,7 @@ o.window({ class = "steam" }, { min_size = { 100, 100 } })
 -- takes effect when the window is fullscreen and solitary.
 o.window({ class = "cs2" }, { immediate = true })
 
--- bluetui/wiremix terminal popups (SUPER+CTRL+B / SUPER+CTRL+A) float by default.
-o.window("bluetui", { float = true, center = true, size = { 875, 1000 } })
+-- wiremix terminal popup (SUPER+SHIFT+S / SUPER+CTRL+A) floats by default.
 o.window("wiremix", { float = true, center = true })
 
 -- DaVinci Resolve's XWayland popups fight the main window for focus and

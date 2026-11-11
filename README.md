@@ -12,12 +12,14 @@ Use at your own risk.
 - sets up Vencord from [vencord](https://github.com/RyanAHayden/vencord) (cloned to `~/vencord`): patches it into Discord and stows its settings (Discord's minimum window size off)
 - stows the LazyVim config from [nvim](https://github.com/RyanAHayden/nvim) (cloned to `~/nvim`) into `~/.config/nvim`, shared with hypr-mac
 - sets up Obsidian from [obsidian](https://github.com/RyanAHayden/obsidian) (cloned to `~/obsidian`) in the Syncthing-synced vault `~/sync/obsidian/notes`: vim mode, the Vimakase and Git plugins, Ctrl+H / Ctrl+L between the file explorer and the note, shared with hypr-mac
+- installs Syncthing and starts it at login (Arch's user unit, no browser page; GUI at http://127.0.0.1:8384)
+- installs Tailscale and starts `tailscaled`; logging in (and `gh auth login`) is left for you and listed at the end, so setup never stops to ask
 - sets dolphin as the file manager (archives open as folders, scripts run without a prompt)
 - installs sudoers rules for `reboot-to-windows` and `toggle-gpu-high.sh`
 - installs xpadneo and blocks rumble on GuliKit pads (their firmware crashes on it)
 - reserves the Sunshine ports from the ephemeral range (avoids a bind EADDRINUSE crash loop)
 
-Extra packages: `omarchy pkg add bluetui wiremix mangohud`
+Extra packages: `omarchy pkg add wiremix mangohud`
 
 Discord theme (Vencord):
 `https://raw.githubusercontent.com/refact0r/system24/refs/heads/main/theme/flavors/system24-auto.theme.css`

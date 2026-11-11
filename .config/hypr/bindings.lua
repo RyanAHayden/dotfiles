@@ -69,16 +69,17 @@ hl.unbind("SUPER + SHIFT + SLASH") -- was: 1Password
 o.bind("SUPER + SHIFT + SLASH", "Passwords (scratchpad)", "~/bin/scratch-app org.keepassxc.KeePassXC keepassxc")
 
 hl.unbind("SUPER + SHIFT + S") -- was: Google Maps
-o.bind("SUPER + SHIFT + S", "Screenshot", "omarchy-capture-screenshot")
+o.bind("SUPER + SHIFT + S", "Sound (wiremix)", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix")
 
 hl.unbind("SUPER + SHIFT + P") -- was: Google Photos
 
--- Restore pre-Quattro TUI managers instead of the built-in shell panels
-hl.unbind("SUPER + CTRL + B") -- was: Bluetooth panel (omarchy.bluetooth)
-o.bind("SUPER + CTRL + B", "Bluetooth (bluetui)", "uwsm-app -- xdg-terminal-exec --app-id=bluetui -- bluetui")
+-- Wi-Fi on W: Omarchy's network panel (also on SUPER+CTRL+N) instead of the background switcher
+hl.unbind("SUPER + CTRL + W") -- was: Background switcher
+o.bind("SUPER + CTRL + W", "Wi-Fi", { panel = "omarchy.network" })
 
+-- Restore the pre-Quattro audio TUI instead of the built-in shell panel (Bluetooth keeps Omarchy's panel)
 hl.unbind("SUPER + CTRL + A") -- was: Audio panel (omarchy.audio)
-o.bind("SUPER + CTRL + A", "Audio (wiremix)", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix") -- moved off SUPER+SHIFT+S (screenshot)
+o.bind("SUPER + CTRL + A", "Audio (wiremix)", "uwsm-app -- xdg-terminal-exec --app-id=wiremix -- wiremix") -- also on SUPER+SHIFT+S
 
 -- Laptop keys (keyd): Caps -> Ctrl, Fn + hjkl -> arrows. setup.sh turns it on once on laptops, off on the desktop; ~/bin/laptop-keys
 o.bind("SUPER + CTRL + ALT + K", "Toggle laptop keys: Caps as Ctrl and Fn+hjkl as arrows", "~/bin/laptop-keys toggle")
@@ -90,6 +91,10 @@ if require("hypr.laptop") then
 	local kbd = { locked = true, repeating = true }
 	o.bind("XF86Search", "Keyboard brightness down", "omarchy-brightness-keyboard down", kbd)
 	o.bind("XF86AudioMicMute", "Keyboard brightness up", "omarchy-brightness-keyboard up", kbd)
+	-- F3 (Mission Control) = screenshot, since the MacBook has no Print key. Asahi sends KEY_ALL_APPLICATIONS
+	-- (XF86LaunchB); older Apple keyboards send KEY_SCALE (XF86LaunchA)
+	o.bind("XF86LaunchB", "Screenshot", "omarchy-capture-screenshot")
+	o.bind("XF86LaunchA", "Screenshot", "omarchy-capture-screenshot")
 end
 
 -- Brightness controls
