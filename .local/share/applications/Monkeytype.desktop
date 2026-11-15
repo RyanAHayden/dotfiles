@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Monkeytype
+Comment=Monkeytype
+Exec=omarchy-launch-webapp "https://monkeytype.com/"
+Terminal=false
+Type=Application
+Icon=monkeytype
+StartupNotify=true
+StartupWMClass=chrome-monkeytype.com__-Default

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Nextcloud
+Comment=Nextcloud
+Exec=omarchy-launch-webapp "https://next.hayde.in/"
+Terminal=false
+Type=Application
+Icon=nextcloud
+StartupNotify=true
+StartupWMClass=chrome-next.hayde.in__-Default

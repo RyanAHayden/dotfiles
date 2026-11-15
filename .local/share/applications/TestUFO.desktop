@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=TestUFO
+Comment=TestUFO
+Exec=omarchy-launch-webapp "https://testufo.com/"
+Terminal=false
+Type=Application
+Icon=testufo
+StartupNotify=true
+StartupWMClass=chrome-testufo.com__-Default

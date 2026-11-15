@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Router
+Comment=Router
+Exec=omarchy-launch-webapp "http://192.168.0.1/"
+Terminal=false
+Type=Application
+Icon=router
+StartupNotify=true
+StartupWMClass=chrome-192.168.0.1__-Default

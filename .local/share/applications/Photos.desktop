@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Photos
+Comment=Photos
+Exec=omarchy-launch-webapp "https://photos.hayde.in/photos"
+Terminal=false
+Type=Application
+Icon=photos
+StartupNotify=true
+StartupWMClass=chrome-photos.hayde.in__photos-Default

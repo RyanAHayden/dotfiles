@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=OpenTennis Beta
+Comment=OpenTennis Beta
+Exec=omarchy-launch-webapp "https://beta.opentennis.dev/"
+Terminal=false
+Type=Application
+Icon=opentennis-beta
+StartupNotify=true
+StartupWMClass=chrome-beta.opentennis.dev__-Default

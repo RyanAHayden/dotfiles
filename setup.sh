@@ -46,8 +46,10 @@ echo "==> remove Omarchy's preinstalled web apps (first run only, so ones added 
 first_run_done="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/webapps-removed"
 if [ ! -e "$first_run_done" ]; then
   for app in HEY Basecamp WhatsApp "Google Photos" "Google Contacts" "Google Messages" "Google Maps" \
-    ChatGPT YouTube GitHub X Figma Zoom Fizzy; do # Omarchy's stock list (Discord stays: SUPER+SHIFT+C)
-    [ -f ~/.local/share/applications/"$app".desktop ] && OMARCHY_REMOVE_NOTIFY=false omarchy-webapp-remove "$app"
+    ChatGPT YouTube GitHub X Figma Discord Zoom Fizzy; do # Omarchy's stock list (ARM re-adds Discord below)
+    f=~/.local/share/applications/"$app".desktop
+    # symlinks are our own web apps, stowed from .local/share/applications above
+    [ -f "$f" ] && [ ! -L "$f" ] && OMARCHY_REMOVE_NOTIFY=false omarchy-webapp-remove "$app"
   done
   mkdir -p "$(dirname "$first_run_done")" && touch "$first_run_done"
 fi

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Orbital
+Comment=Orbital
+Exec=omarchy-launch-webapp "https://ctrl.orbitalworks.co/"
+Terminal=false
+Type=Application
+Icon=orbital
+StartupNotify=true
+StartupWMClass=chrome-ctrl.orbitalworks.co__-Default

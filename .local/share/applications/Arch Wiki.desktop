@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Arch Wiki
+Comment=Arch Wiki
+Exec=omarchy-launch-webapp "https://wiki.archlinux.org/"
+Terminal=false
+Type=Application
+Icon=arch-wiki
+StartupNotify=true
+StartupWMClass=chrome-wiki.archlinux.org__-Default

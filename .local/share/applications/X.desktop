@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=X
+Comment=X
+Exec=omarchy-launch-webapp "https://x.com/"
+Terminal=false
+Type=Application
+Icon=x
+StartupNotify=true
+StartupWMClass=chrome-x.com__-Default
