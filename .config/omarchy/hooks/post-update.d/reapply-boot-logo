@@ -1,0 +1,7 @@
+#!/bin/bash
+# omarchy-settings owns /usr/share/plymouth/themes/omarchy, so package upgrades reset the boot logo to stock.
+# Re-apply ours only when it was reset (re-applying rebuilds the initramfs).
+logo=$(omarchy-theme-dir ryha-omarchy)/unlock.png
+cmp -s "$logo" /usr/share/plymouth/themes/omarchy/logo.png && exit 0
+echo "Boot logo was reset by the update, re-applying ryha-omarchy"
+omarchy plymouth set by theme ryha-omarchy
