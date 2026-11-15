@@ -42,9 +42,13 @@ adopted=$(comm -13 <(sort <<<"$before") <(changed | sort) | cut -d' ' -f2-)
 omarchy theme install https://github.com/RyanAHayden/ryha-omarchy-theme
 
 echo "==> remove Omarchy's preinstalled web apps (first run only, so ones added later stay)"
+# by name, never `omarchy webapp remove all`: that also deletes web apps you made yourself (it wiped them 2026-11-15)
 first_run_done="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/webapps-removed"
 if [ ! -e "$first_run_done" ]; then
-  omarchy webapp remove all
+  for app in HEY Basecamp WhatsApp "Google Photos" "Google Contacts" "Google Messages" "Google Maps" \
+    ChatGPT YouTube GitHub X Figma Zoom Fizzy; do # Omarchy's stock list (Discord stays: SUPER+SHIFT+C)
+    [ -f ~/.local/share/applications/"$app".desktop ] && OMARCHY_REMOVE_NOTIFY=false omarchy-webapp-remove "$app"
+  done
   mkdir -p "$(dirname "$first_run_done")" && touch "$first_run_done"
 fi
 
