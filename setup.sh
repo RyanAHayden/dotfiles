@@ -57,10 +57,13 @@ fi
 echo "==> git uses the gh login (push credentials)"
 if gh auth status >/dev/null 2>&1; then
   # plain `gh`, not `gh auth setup-git`, which writes mise's version-pinned path and breaks on the next gh upgrade
-  for host in https://github.com https://gist.github.com; do
-    git config --global --replace-all "credential.$host.helper" ""
-    git config --global --add "credential.$host.helper" "!gh auth git-credential"
-  done
+  # github.com: git-credential-gh-owner (.local/bin) picks the gh login matching the repo's owner, so a repo
+  # under another of your accounts pushes as that account instead of whichever one gh has active
+  git config --global credential.https://github.com.useHttpPath true
+  git config --global --replace-all credential.https://github.com.helper ""
+  git config --global --add credential.https://github.com.helper gh-owner
+  git config --global --replace-all credential.https://gist.github.com.helper ""
+  git config --global --add credential.https://gist.github.com.helper "!gh auth git-credential"
 else
   echo "    not logged in, skipped"
   later+=("GitHub: gh auth login, then re-run ./setup.sh (sets git's credential helper)")
