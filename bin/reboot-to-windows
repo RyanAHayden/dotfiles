@@ -6,4 +6,4 @@ if [ -z "$id" ] || ! sudo -n efibootmgr --bootnext "$id" >/dev/null; then
   notify-send -u critical "Reboot to Windows failed" "Couldn't set BootNext (Windows entry: ${id:-not found})"
   exit 1
 fi
-omarchy-system-reboot
+omarchy-system reboot
