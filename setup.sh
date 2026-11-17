@@ -54,19 +54,16 @@ if [ ! -e "$first_run_done" ]; then
   mkdir -p "$(dirname "$first_run_done")" && touch "$first_run_done"
 fi
 
-echo "==> git uses the gh login (push credentials + commit name/email)"
+echo "==> git uses the gh login (push credentials)"
 if gh auth status >/dev/null 2>&1; then
   # plain `gh`, not `gh auth setup-git`, which writes mise's version-pinned path and breaks on the next gh upgrade
   for host in https://github.com https://gist.github.com; do
     git config --global --replace-all "credential.$host.helper" ""
     git config --global --add "credential.$host.helper" "!gh auth git-credential"
   done
-  # GitHub noreply address, so commits link to the account without exposing a real email
-  git config --global user.name "$(gh api user --jq '.name // .login')"
-  git config --global user.email "$(gh api user --jq '"\(.id)+\(.login)@users.noreply.github.com"')"
 else
   echo "    not logged in, skipped"
-  later+=("GitHub: gh auth login, then re-run ./setup.sh (sets git's credential helper, name and email)")
+  later+=("GitHub: gh auth login, then re-run ./setup.sh (sets git's credential helper)")
 fi
 
 echo "==> apps the keybindings launch (.config/hypr/bindings.lua)"
