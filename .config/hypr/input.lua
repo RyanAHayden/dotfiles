@@ -62,5 +62,7 @@ hl.config({
 -- Fire wheel binds on every step (default 300ms drops steps and leaks them to the app; used by window-volume.sh)
 hl.config({ binds = { scroll_event_delay = 0 } })
 
--- Don't let mouse movement wake the display (jittery receiver kept waking it overnight).
-hl.config({ misc = { mouse_move_enables_dpms = false } })
+-- Don't let Hyprland wake the display on input (jittery mouse overnight; virtual keyboards from
+-- Sunshine/gsr-ui/tools). The lock screen still wakes on a real key/click and re-blanks after 5s idle;
+-- Hyprland's own wake skipped that re-blank and left the lock screen lit (burn-in).
+hl.config({ misc = { mouse_move_enables_dpms = false, key_press_enables_dpms = false } })
