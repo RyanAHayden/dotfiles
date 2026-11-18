@@ -138,6 +138,7 @@ o.bind("SUPER + SHIFT + I", "Promote window", hl.dsp.layout("movetoroot"))
 o.bind("SUPER + CTRL + SHIFT + I", "Flip split side", hl.dsp.layout("swapsplit"))
 
 -- Workspace navigation (relative, wraps past existing workspaces)
+hl.unbind("SUPER + A") -- was: Select all (omarchy clipboard)
 o.bind("SUPER + A", "Switch workspace left", hl.dsp.focus({ workspace = "r-1" }))
 o.bind("SUPER + D", "Switch workspace right", hl.dsp.focus({ workspace = "r+1" }))
 
