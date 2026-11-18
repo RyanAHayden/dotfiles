@@ -202,6 +202,8 @@ o.bind("SUPER + ALT + mouse_down", "Brightness down 5%", "~/bin/omarchy-brightne
 -- Toggle DP-1 pin: press, switch LG dual mode (4K@240 <-> 1080p@480), press again. Desktop only (laptop.lua).
 if not require("hypr.laptop") then
 	o.bind("SUPER + CTRL + ALT + O", "Toggle monitor pin (dual-mode switch)", "~/bin/pin-monitors-toggle")
+	-- Pinned DP-1 misses the monitor's power-on, so it stays dark: off/on forces a modeset.
+	o.bind("SUPER + CTRL + ALT + M", "Wake display (after monitor power-cycle)", "hyprctl dispatch 'hl.dsp.dpms({action=\"off\"})'; sleep 1; hyprctl dispatch 'hl.dsp.dpms({action=\"on\"})'")
 end
 
 -- Toggle labels (title · program · pid) over every visible window (local.window-labels shell plugin)
