@@ -28,6 +28,24 @@ def moved(etype, value, axis):
     return abs(value - rest) > span * DEADZONE
 
 
+def puck_active(report):
+    """Steam Controller puck (28de:1304) hidraw input report 0x42: buttons at bytes 2-9, sticks/triggers/pads
+    at 18-29, all exactly 0 at rest (firmware deadzone). Bytes 10-17 are IMU noise, ignored.
+    Needed because its evdev nodes are lizard-mode kbd/mouse and Steam's 360 vpad only fires in games."""
+    return report[:1] == b"\x42" and any(report[2:10] + report[18:30])
+
+
+def puck_hidraws():
+    # ponytail: only the 2026 puck; add other Valve PIDs when one shows up (report layouts differ)
+    for dev in os.listdir("/sys/class/hidraw"):
+        try:
+            with open(f"/sys/class/hidraw/{dev}/device/uevent") as f:
+                if "HID_ID=0003:000028DE:00001304" in f.read():
+                    yield f"/dev/{dev}"
+        except OSError:
+            pass
+
+
 def is_uinput(syspath):
     return "/devices/virtual/input/" in syspath
 
@@ -74,7 +92,15 @@ def main():
             now = time.monotonic()
             if now >= next_scan:  # open only new devices; forget vanished ones
                 paths = set(evdev.list_devices(writable=False))  # pads can be read-only (mask r--)
-                seen &= paths
+                hidraws = set(puck_hidraws())
+                seen &= paths | hidraws
+                for path in hidraws - seen:
+                    seen.add(path)
+                    try:
+                        fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+                    except OSError:
+                        continue
+                    pads[fd] = (path, None)
                 for path in paths - seen:
                     seen.add(path)
                     try:
@@ -96,12 +122,22 @@ def main():
             for fd in select.select(list(pads), [], [], POLL)[0]:
                 d, axes = pads[fd]
                 try:
-                    if any(moved(ev.type, ev.value, axes.get(ev.code)) for ev in d.read()):
+                    if axes is None:  # puck hidraw: drain everything queued (~200 reports/s)
+                        reports = []
+                        while True:
+                            try:
+                                reports.append(os.read(fd, 64))
+                            except BlockingIOError:
+                                break
+                        hit = any(map(puck_active, reports))
+                    else:
+                        hit = any(moved(ev.type, ev.value, axes.get(ev.code)) for ev in d.read())
+                    if hit:
                         last = time.monotonic()
                 except OSError:  # unplugged; next scan reopens it if it comes back
                     del pads[fd]
-                    seen.discard(d.path)
-                    d.close()
+                    seen.discard(d if axes is None else d.path)
+                    os.close(fd) if axes is None else d.close()
 
             if held and not ours():
                 held = False  # user toggled it (off: we retake it below while the pad's in use; on: theirs)
@@ -125,6 +161,10 @@ if __name__ == "__main__":
         assert not moved(e.EV_ABS, 5, trig) and moved(e.EV_ABS, 200, trig)
         assert not moved(e.EV_ABS, 0, hat) and moved(e.EV_ABS, -1, hat)
         assert not moved(e.EV_SYN, 0, None)
+        idle = bytes.fromhex("42bb0000000000000000" "8eff95020101cd01" "000000000000000000000000" "b36234d2")
+        assert not puck_active(idle) and not puck_active(b"\x7b" + bytes(12))
+        assert puck_active(idle[:3] + b"\x14" + idle[4:])                    # button
+        assert puck_active(idle[:18] + b"\xfe\x96" + idle[20:])            # stick
         assert is_uinput("/sys/devices/virtual/input/input39/event20")
         assert not is_uinput("/sys/devices/virtual/misc/uhid/0005:045E:02E0.001C/input/input49/event21")
         import tempfile
