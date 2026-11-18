@@ -45,3 +45,7 @@ alias c=cld
 # t [session] = attach (to named session if given), else new "Work"
 unalias t 2>/dev/null
 t() { tmux attach ${1:+-t "$1"} || tmux new -s "${1:-Work}"; }
+
+# iOS build toolchain (Cydian's native build reads these; agent-runner passes them to its slots)
+export SWIFT_TOOLCHAIN="$HOME/.local/share/swift/swift-6.4.2-RELEASE-ubuntu24.04"
+export IOS_SDK="$HOME/.local/share/ios-sdk/iPhoneOS27.1.sdk"
