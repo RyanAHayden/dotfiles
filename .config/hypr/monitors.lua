@@ -43,6 +43,8 @@ local function lg_dual_mode_scale()
 end
 hl.on("monitor.added", function()
   lg_dual_mode_scale()
+  -- The crosshair overlay's layer eats every click after the switch: kill it
+  hl.exec_cmd("pkill -f .local/bin/crosshair/crosshair")
   -- The switch changes DP-1's logical size and can strand floating windows off screen: re-center
   -- them once the new layout has settled
   hl.timer(function()
