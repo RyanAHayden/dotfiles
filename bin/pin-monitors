@@ -22,5 +22,11 @@ for c in /sys/class/drm/card*-*; do
   [[ $conn == DP-* && $(cat "$c/status") == connected ]] || continue
   cat "$c/edid" > "$dbg/edid_override"
   echo on > "$c/status"
+  # A pinned connector never sees the monitor's power-on hotplug, so the link retrains on its own
+  # and falls back to HBR2 -> 4K@240 doesn't fit ("err 28", no signal). Pin the verified lanes/rate too.
+  if [[ -e $dbg/link_settings ]]; then
+    ls=$(awk '/^Verified/{print $2, $3}' "$dbg/link_settings")
+    [[ -n $ls ]] && printf '%s' "$ls" > "$dbg/link_settings" && echo "pinned link $ls"
+  fi
   echo "pinned $name"
 done
