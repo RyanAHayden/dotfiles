@@ -33,6 +33,12 @@
     "description": "Run Vencord Installer",
     "action": "omarchy-launch-floating-terminal-with-presentation 'sh -c \"$(curl -sS https://vencord.dev/install.sh)\"'"
   },
+  "trigger.keepass-merge": {
+    "icon": "󰌋",
+    "label": "Merge KeePass Conflicts",
+    "description": "Merge Syncthing conflict copies into Passwords.kdbx",
+    "action": "omarchy-launch-floating-terminal-with-presentation ~/bin/keepass-merge"
+  },
   "trigger.hardware.bluetooth-sync": {
     "icon": "󰂯",
     "label": "Resync Bluetooth Keys",

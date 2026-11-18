@@ -1,0 +1,22 @@
+#!/bin/bash
+# Merge Syncthing conflict copies of the KeePass DB into Passwords.kdbx, deleting each on success.
+cd ~/sync/passwords || exit 1
+shopt -s nullglob
+conflicts=(Passwords.sync-conflict-*.kdbx)
+if ((${#conflicts[@]} == 0)); then
+  echo "No conflicts."
+else
+  echo "Close KeePassXC first. ${#conflicts[@]} conflict(s) found."
+  # ponytail: single rolling backup, outside the synced folder
+  cp Passwords.kdbx ~/Passwords.pre-merge.kdbx && echo "Backup: ~/Passwords.pre-merge.kdbx"
+  read -rsp 'Master password: ' P && echo
+  for f in "${conflicts[@]}"; do
+    if printf '%s\n' "$P" | keepassxc-cli merge -s -q Passwords.kdbx "$f"; then
+      rm "$f" && echo "merged $f"
+    else
+      echo "FAILED $f (kept)"
+    fi
+  done
+  unset P
+fi
+read -rsn1 -p 'Press any key to close'
