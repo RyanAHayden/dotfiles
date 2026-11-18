@@ -63,7 +63,7 @@ o.bind(
 )
 
 hl.unbind("SUPER + SHIFT + G") -- was: Signal
-o.bind("SUPER + SHIFT + G", "Steam", "omarchy-launch-or-focus steam 'uwsm-app -- env GDK_SCALE=1 steam'")
+o.bind("SUPER + SHIFT + G", "Steam", "omarchy-launch-or-focus steam 'uwsm-app -- steam-launch'")
 
 hl.unbind("SUPER + SHIFT + SLASH") -- was: 1Password
 o.bind("SUPER + SHIFT + SLASH", "Passwords (scratchpad)", "~/bin/scratch-app org.keepassxc.KeePassXC keepassxc")

@@ -17,6 +17,7 @@ Use at your own risk.
 - sets dolphin as the file manager (archives open as folders, scripts run without a prompt)
 - installs sudoers rules for `reboot-to-windows` and `toggle-gpu-high.sh`
 - installs xpadneo and blocks rumble on GuliKit pads (their firmware crashes on it)
+- builds [extest](https://github.com/Supreeeme/extest) (x86_64) so the Steam Controller trackpad moves the cursor on Hyprland; Steam launches through `steam-launch`, which preloads it
 - reserves the Sunshine ports from the ephemeral range (avoids a bind EADDRINUSE crash loop)
 
 Extra packages: `omarchy pkg add wiremix mangohud`

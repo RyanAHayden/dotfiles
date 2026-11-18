@@ -1,0 +1,10 @@
+#!/bin/bash
+# Steam with the fixes every launcher needs (SUPER+SHIFT+G, steam.desktop):
+# - GDK_SCALE=1: see the Steam note in .config/hypr/hyprland.lua
+# - extest: Steam fakes controller mouse/keyboard through X11 XTEST, which Hyprland ignores, so the
+#   Steam Controller (2026) trackpad moved an invisible cursor. extest turns XTEST into a uinput device.
+#   The Steam client is 64-bit (steamrt64), so it's the x86_64 build (AUR lib32-extest won't load);
+#   setup.sh builds it. https://github.com/ValveSoftware/steam-for-linux/issues/13185
+lib="$HOME/.local/lib/libextest64.so"
+[ -f "$lib" ] && export LD_PRELOAD="$lib${LD_PRELOAD:+:$LD_PRELOAD}"
+exec env GDK_SCALE=1 /usr/bin/steam "$@"

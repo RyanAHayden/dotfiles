@@ -187,6 +187,17 @@ yay -S --needed --noconfirm --answerclean None --answerdiff None xpadneo-dkms
 sudo install -Dm644 "$DOTFILES/etc/modprobe.d/xpadneo.conf" /etc/modprobe.d/xpadneo.conf
 sudo install -Dm644 "$DOTFILES/etc/udev/rules.d/99-gulikit-no-ff.rules" /etc/udev/rules.d/99-gulikit-no-ff.rules
 
+echo "==> extest (Steam Controller cursor on Hyprland, preloaded by .local/bin/steam-launch)"
+# x86_64 build: the Steam client is 64-bit, and AUR lib32-extest is 32-bit only; the repo pins i686 in .cargo/config.toml
+if [ ! -f ~/.local/lib/libextest64.so ]; then
+  command -v cargo >/dev/null || sudo pacman -S --needed --noconfirm rust
+  tmp=$(mktemp -d)
+  git clone -q --depth 1 https://github.com/Supreeeme/extest "$tmp" &&
+    cargo build -q --release --manifest-path "$tmp/Cargo.toml" --target x86_64-unknown-linux-gnu &&
+    install -Dm755 "$tmp/target/x86_64-unknown-linux-gnu/release/libextest.so" ~/.local/lib/libextest64.so
+  rm -rf "$tmp"
+fi
+
 echo "==> reserve Sunshine ports from ephemeral range (avoids bind EADDRINUSE crash loop)"
 sudo install -Dm644 "$DOTFILES/etc/sysctl.d/90-sunshine-ports.conf" /etc/sysctl.d/90-sunshine-ports.conf
 sudo sysctl -p /etc/sysctl.d/90-sunshine-ports.conf
