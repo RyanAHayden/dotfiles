@@ -28,13 +28,6 @@ export MANPAGER='nvim +Man!'
 alias transcode="$HOME/scripts/transcode_video.sh"
 alias bgmv="$HOME/scripts/big_move.sh"
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/home/ryha/.lmstudio/bin"
-# End of LM Studio CLI section
-
-
-# arctic
-export PATH=/home/ryha/.arctic/bin:$PATH
 
 # Unity CLI
 case ":${PATH}:" in *:"$HOME/.local/bin":*) ;; *) export PATH="$HOME/.local/bin:$PATH" ;; esac
@@ -49,6 +42,5 @@ alias a='agent-runner --attach'
 unalias t 2>/dev/null
 t() { tmux attach ${1:+-t "$1"} || tmux new -s "${1:-Work}"; }
 
-# iOS build toolchain (Cydian's native build reads these; agent-runner passes them to its slots)
-export SWIFT_TOOLCHAIN="$HOME/.local/share/swift/swift-6.4.2-RELEASE-ubuntu24.04"
-export IOS_SDK="$HOME/.local/share/ios-sdk/iPhoneOS27.1.sdk"
+# Machine-specific stuff (SDK paths, installer PATH lines) lives here, untracked
+[ -f ~/.bashrc.local ] && . ~/.bashrc.local
