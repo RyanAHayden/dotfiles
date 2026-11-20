@@ -9,9 +9,9 @@ else
   echo "Close KeePassXC first. ${#conflicts[@]} conflict(s) found."
   # ponytail: single rolling backup, outside the synced folder
   cp Passwords.kdbx ~/Passwords.pre-merge.kdbx && echo "Backup: ~/Passwords.pre-merge.kdbx"
-  read -rsp 'Master password: ' P && echo
+  IFS= read -rsp 'Master password: ' P && echo
   for f in "${conflicts[@]}"; do
-    if printf '%s\n' "$P" | keepassxc-cli merge -s -q Passwords.kdbx "$f"; then
+    if printf '%s\n' "$P" | keepassxc-cli merge -s Passwords.kdbx "$f"; then
       rm "$f" && echo "merged $f"
     else
       echo "FAILED $f (kept)"
